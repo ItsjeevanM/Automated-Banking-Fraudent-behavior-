@@ -50,7 +50,7 @@ The platform is purpose-built for **compliance officers, forensic auditors, fina
 ### 1 · Upload Bank Statement
 Upload any CSV exported from your bank. The platform auto-detects column names and formats from major Indian banks (HDFC, ICICI, SBI, Axis, Kotak, and more).
 
-![Upload Bank Statement](screenshots/01_upload_data.png)
+![Upload Bank Statement](Screenshots/01_upload_data.png)
 
 > **How it works:** The upload module maps any combination of column names — `type / Debit/Credit`, `mode / Transaction Type`, `narration / Merchant` — to a unified internal schema. No manual column mapping required.
 
@@ -59,7 +59,7 @@ Upload any CSV exported from your bank. The platform auto-detects column names a
 ### 2 · Raw Data Preview
 After upload, the raw file is displayed exactly as received, before any transformations — preserving original timestamps with IST timezone offsets, original narrations, and merchant identifiers.
 
-![Raw Data Preview](screenshots/02_raw_data_preview.png)
+![Raw Data Preview](Screenshots/02_raw_data_preview.png)
 
 > **Sample columns detected:** `type`, `mode`, `amount`, `currentBalance`, `transactionTimestamp`, `valueDate`, `txnId`, `narration`
 
@@ -68,7 +68,7 @@ After upload, the raw file is displayed exactly as received, before any transfor
 ### 3 · Cleaned & Standardized Data
 The platform applies data cleaning rules: UTC normalization, debit/credit label standardization, duplicate removal, and null handling — then previews the 985-row cleaned dataset ready for analysis.
 
-![Cleaned Data Preview](screenshots/03_cleaned_data_preview.png)
+![Cleaned Data Preview](Screenshots/03_clean_data_preview.png)
 
 > **Transformations applied:** Column renaming → Timestamp UTC conversion → Debit/Credit normalization → Balance reconciliation → Transaction ID deduplication
 
@@ -77,7 +77,7 @@ The platform applies data cleaning rules: UTC normalization, debit/credit label 
 ### 4 · Analytics Dashboard — Key Metrics
 The main dashboard surfaces all critical financial KPIs at a glance, computed across the entire statement period.
 
-![Analytics Dashboard](screenshots/04_analytics_dashboard.png)
+![Analytics Dashboard](Screenshots/04_analytics_dashboard.png)
 
 | Metric | Value (Sample Dataset) |
 |---|---|
@@ -95,7 +95,7 @@ The main dashboard surfaces all critical financial KPIs at a glance, computed ac
 ### 5 · Top Merchants & Daily Volume
 Visualizes the top 10 merchants by total spend and the daily transaction volume pattern across the statement period — revealing behavioral patterns at a glance.
 
-![Merchant and Volume Charts](screenshots/05_merchants_volume.png)
+![Merchant and Volume Charts](Screenshots/05_merchants_volume.png)
 
 > **Insight from sample data:** NEFT transfers dominate (₹1.7L total), followed by cash withdrawals and UPI payments. Daily volume spikes visible in Oct–Nov 2023 warrant further investigation.
 
@@ -104,7 +104,7 @@ Visualizes the top 10 merchants by total spend and the daily transaction volume 
 ### 6 · Monthly Spending Trend
 A color-intensity bar chart tracks total monthly spending from July 2023 through May 2024 — immediately surfacing anomalous months.
 
-![Monthly Spending Trend](screenshots/06_monthly_trend.png)
+![Monthly Spending Trend](Screenshots/06_montly_trend.png)
 
 > **Anomaly visible:** November 2023 shows ₹2,30,000 in spending — **4.8× the average monthly spend** — flagged as a high-risk period requiring investigation.
 
@@ -113,7 +113,7 @@ A color-intensity bar chart tracks total monthly spending from July 2023 through
 ### 7 · Risk Analysis
 The risk engine evaluates all transactions against configurable rules and computes an overall account risk score. Analysts can tune the high-value transaction threshold using an interactive slider.
 
-![Risk Analysis](screenshots/07_risk_analysis.png)
+![Risk Analysis](Screenshots/07_risk_analysis.png)
 
 | Risk Indicator | Value |
 |---|---|
@@ -169,13 +169,13 @@ Every flagged transaction receives a plain-English breakdown showing exactly whi
    Amount: ₹87,000  |  Time: 2:14 AM  |  Risk Score: 91
 
    Why this was flagged:
-   ▓▓▓▓▓▓▓▓▓▓  Amount: 6.2× your average night transaction   (+38 pts)
+   ▓▓▓▓▓▓▓▓▓▓  Amount: 6.2× your average night transaction    (+38 pts)
    ▓▓▓▓▓▓▓     Merchant Category: Crypto Exchange (first-time) (+28 pts)
-   ▓▓▓▓        Hour: Outside your normal 9 AM–11 PM window    (+17 pts)
-   ▓▓          IP geolocation mismatch with home city          (+8 pts)
+   ▓▓▓▓        Hour: Outside your normal 9 AM–11 PM window     (+17 pts)
+   ▓▓          IP geolocation mismatch with home city           (+8 pts)
 ```
 
-**Tech:** SHAP values on XGBoost/LightGBM classifier; per-transaction feature importance waterfall charts
+**Tech:** SHAP values on XGBoost/LightGBM classifier; per-transaction feature importance waterfall charts  
 **Impact:** Transforms ML output into courtroom-ready, auditable evidence
 
 ---
@@ -187,11 +187,11 @@ Instead of a single brittle risk score, each flagged transaction shows a **confi
 
 ```
 Transaction Risk Assessment:
-   Score: 74 ± 12  [Low Confidence → Needs human review]
+   Score: 74 ± 12  [Low Confidence  → Needs human review]
    Score: 93 ± 3   [High Confidence → Auto-escalate]
 ```
 
-**Tech:** Monte Carlo Dropout / Bayesian Neural Networks for uncertainty quantification
+**Tech:** Monte Carlo Dropout / Bayesian Neural Networks for uncertainty quantification  
 **Impact:** Calibrated trust in AI — humans intervene exactly where the model is uncertain
 
 ---
@@ -203,15 +203,15 @@ Build a unique **behavioral profile per account** — normal spending rhythm, pr
 
 ```
 Your Spending DNA Profile:
-  ☕ Morning coffee:     ₹180–220, weekday mornings
-  🍽  Weekend dining:    ₹1,200–3,500, Fri–Sun evenings
-  💰 Salary credit:     1st–2nd of each month, ~₹68,000
-  🏪 Grocery run:       ₹2,000–5,000, weekend
+  ☕ Morning coffee:   ₹180–220, weekday mornings
+  🍽  Weekend dining:  ₹1,200–3,500, Fri–Sun evenings
+  💰 Salary credit:   1st–2nd of each month, ~₹68,000
+  🏪 Grocery run:     ₹2,000–5,000, weekend
 
 🚨 Alert: ₹45,000 grocery transaction — 12× your usual spend
 ```
 
-**Tech:** Isolation Forest + LSTM autoencoders trained per-user; cosine similarity on spending embeddings
+**Tech:** Isolation Forest + LSTM autoencoders trained per-user; cosine similarity on spending embeddings  
 **Impact:** Personalized anomaly detection — not one global threshold applied to all accounts
 
 ---
@@ -226,10 +226,10 @@ Profile: User has 0 transactions between 1:00 AM – 5:00 AM
          in the last 18 months of history.
 
 New transaction at 3:47 AM → Circadian Violation Score: +35 pts
-Combined with amount anomaly → Total Risk Score: 78
+Combined with amount anomaly  → Total Risk Score: 78
 ```
 
-**Tech:** Gaussian Mixture Models on transaction hour/weekday distributions per user; KL-divergence scoring
+**Tech:** Gaussian Mixture Models on transaction hour/weekday distributions per user; KL-divergence scoring  
 **Impact:** Catches account takeover fraud even when the transaction amount appears normal
 
 ---
@@ -251,7 +251,7 @@ Signals Detected This Month:
 Recommendation: Flag for welfare check / fraud victim review
 ```
 
-**Tech:** Gradient Boosted Trees on behavioral indicator features; sliding time-window feature engineering
+**Tech:** Gradient Boosted Trees on behavioral indicator features; sliding time-window feature engineering  
 **Impact:** Banks can proactively offer support; compliance teams identify potential fraud victims early
 
 ---
@@ -265,7 +265,7 @@ One-click generation of a **court-ready or compliance-ready narrative report**. 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FORENSIC TRANSACTION ANALYSIS REPORT
 Account: XXXX4521  |  Period: March 1–31, 2024
-Risk Level: HIGH  |  Generated: Auto (LLM)
+Risk Level: HIGH   |  Generated: Auto (LLM)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 EXECUTIVE SUMMARY
@@ -280,11 +280,10 @@ TIMELINE OF SUSPICIOUS ACTIVITY
 [March 7]  First contact with new merchant category (Crypto)
 [March 12] Circadian violation — 3:44 AM transfer ₹22,000
 [March 14] Velocity burst — 11 transactions in 90 minutes
-...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**Tech:** Claude/GPT-4 with structured chain-of-thought prompting; template-guided generation from aggregated transaction features
+**Tech:** Claude/GPT-4 with structured chain-of-thought prompting; template-guided generation from aggregated transaction features  
 **Impact:** Reduces forensic report writing from 4–6 hours to under 60 seconds per case
 
 ---
@@ -306,13 +305,34 @@ Using historical transaction patterns, the AI **forecasts future account balance
   Day 22  ₹69,200  ────────────────────── ← Salary credit
 
 Upcoming Bills Detected:
-  • Rent debit ~₹25,000 (Day 8, recurring 8th of month)
-  • Insurance premium ~₹3,200 (Day 15, recurring)
-  • Netflix/OTT ~₹500 (Day 18)
+  • Rent debit      ~₹25,000  (Day 8,  recurring 8th of month)
+  • Insurance       ~₹3,200   (Day 15, recurring)
+  • Netflix/OTT     ~₹500     (Day 18)
 ```
 
-**Tech:** Temporal Fusion Transformer (TFT) or N-BEATS; trained on recurring transaction patterns per account
+**Tech:** Temporal Fusion Transformer (TFT) or N-BEATS; trained on recurring transaction patterns per account  
 **Impact:** Proactive overdraft prevention + financial wellness features for account holders
+
+---
+
+### 8 · Smurfing Detector
+**Category:** Anti-Money Laundering (AML)
+
+Detects **structuring patterns** where large sums are deliberately broken into multiple smaller transactions to stay below regulatory reporting thresholds (e.g., ₹10,000 CTR limit).
+
+```
+🚨 SMURFING PATTERN DETECTED
+
+  12 transactions over 6 days — Total: ₹1,14,700
+  Each transaction range: ₹9,200 – ₹9,900
+  All staying just below ₹10,000 threshold
+
+  Structuring Confidence: 94%
+  Recommended Action: File SAR immediately
+```
+
+**Tech:** Sliding window aggregation + threshold proximity scoring; sequence pattern matching on transaction clusters  
+**Impact:** Catches AML structuring that evades per-transaction rules entirely
 
 ---
 
@@ -323,11 +343,12 @@ Upcoming Bills Detected:
 | **Frontend / UI** | [Streamlit](https://streamlit.io/) |
 | **Data Processing** | Pandas, NumPy |
 | **Visualization** | Plotly Express, Plotly Graph Objects |
+| **OCR** | Tesseract / PaddleOCR (PDF & image ingestion) |
 | **Risk Engine** | Rule-based classifier (current), XGBoost/LightGBM (planned) |
-| **Explainability (Planned)** | SHAP, DiCE (Diverse Counterfactuals) |
-| **Behavioral AI (Planned)** | Scikit-learn, PyTorch / LSTM Autoencoders |
-| **LLM Reports (Planned)** | Anthropic Claude API / OpenAI GPT-4 |
-| **Forecasting (Planned)** | PyTorch Forecasting (TFT), statsforecast |
+| **Explainability** | SHAP, DiCE (Diverse Counterfactuals) |
+| **Behavioral AI** | Scikit-learn, PyTorch / LSTM Autoencoders |
+| **LLM Reports** | Anthropic Claude API / OpenAI GPT-4 |
+| **Forecasting** | PyTorch Forecasting (TFT), statsforecast |
 | **Language** | Python 3.10+ |
 
 ---
@@ -335,15 +356,16 @@ Upcoming Bills Detected:
 ## 📁 Project Structure
 
 ```
-automated-bank-analyzer/
+Automated-Banking-Fraudent-behavior-/
 │
 ├── app.py                          # Main Streamlit entry point
 ├── requirements.txt
 ├── README.md
 │
-├── modules/
+├── code/
 │   ├── ingestion/
 │   │   ├── csv_loader.py           # Multi-format CSV ingestion
+│   │   ├── ocr_loader.py           # PDF & image OCR extraction
 │   │   └── schema_mapper.py        # Auto column detection & mapping
 │   │
 │   ├── processing/
@@ -356,26 +378,23 @@ automated-bank-analyzer/
 │   │
 │   ├── risk/
 │   │   ├── rule_engine.py          # Configurable rule-based scorer
+│   │   ├── smurfing_detector.py    # AML structuring detection
 │   │   └── risk_calculator.py      # Aggregate risk score computation
 │   │
-│   └── ai/                         # ← Planned AI modules
+│   └── ai/
 │       ├── shap_explainer.py       # SHAP-based transaction explanations
 │       ├── behavioral_profile.py   # Spending DNA + Circadian detection
 │       ├── stress_index.py         # Financial Stress Index (FSI)
 │       ├── forensic_report.py      # LLM auto-report generation
 │       └── cashflow_forecast.py    # Time-series balance prediction
 │
-├── data/
-│   └── sample/
-│       └── bank_statements.csv     # Sample dataset (985 rows, Jul 2023–May 2024)
-│
-└── screenshots/
+└── Screenshots/
     ├── 01_upload_data.png
     ├── 02_raw_data_preview.png
-    ├── 03_cleaned_data_preview.png
+    ├── 03_clean_data_preview.png
     ├── 04_analytics_dashboard.png
     ├── 05_merchants_volume.png
-    ├── 06_monthly_trend.png
+    ├── 06_montly_trend.png
     └── 07_risk_analysis.png
 ```
 
@@ -389,8 +408,8 @@ automated-bank-analyzer/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/automated-bank-analyzer.git
-cd automated-bank-analyzer
+git clone https://github.com/ItsjeevanM/Automated-Banking-Fraudent-behavior-.git
+cd Automated-Banking-Fraudent-behavior-
 ```
 
 ### 2. Create a Virtual Environment
@@ -419,6 +438,9 @@ pandas>=2.0.0
 numpy>=1.26.0
 plotly>=5.18.0
 python-dateutil>=2.8.0
+shap>=0.44.0
+xgboost>=2.0.0
+scikit-learn>=1.4.0
 ```
 
 ---
@@ -426,35 +448,22 @@ python-dateutil>=2.8.0
 ## 📖 Usage Guide
 
 ### Step 1 — Upload Your Bank Statement
-Navigate to **Upload Data** in the sidebar. Click **Upload** and select your CSV file (up to 200MB).
+Navigate to **Upload Data** in the sidebar. Upload a **CSV**, **PDF**, or **scanned image** of your bank statement (up to 200MB).
 
-The platform accepts any CSV with these columns in any naming variation:
-
-| Required Data | Accepted Column Names |
+| Format | How it works |
 |---|---|
-| Transaction Date | `Date`, `valueDate`, `TransactionDate` |
-| Debit/Credit Type | `type`, `Debit/Credit`, `Transaction Type` |
-| Amount | `amount`, `Amount`, `Withdrawal`, `Deposit` |
-| Running Balance | `currentBalance`, `Balance`, `Closing Balance` |
-| Transaction Mode | `mode`, `Mode`, `Narration` |
-| Merchant / Reference | `narration`, `Description`, `Remarks` |
+| CSV | Direct parse — fastest |
+| PDF | Text extraction → auto column mapping |
+| Image (JPG/PNG) | OCR → text extraction → column mapping |
 
 ### Step 2 — Review Cleaned Data
-After upload, switch to **Upload Data → Cleaned Preview** to verify 985 rows were loaded correctly and all columns were standardized.
+After upload, switch to the **Cleaned Preview** tab to verify all rows were loaded and columns standardized correctly.
 
 ### Step 3 — Explore the Dashboard
-Navigate to **Dashboard** to see:
-- Full key metrics panel
-- Top 10 merchants by spend
-- Daily transaction volume timeline
-- Monthly spending trend
+Navigate to **Dashboard** to see key metrics, top merchants, daily volume, and monthly spending trend.
 
 ### Step 4 — Run Risk Analysis
-Navigate to **Risk Analysis** to:
-- Adjust the **High-Value Transaction Threshold** using the ₹ slider
-- View the computed **Overall Risk Score** and **Risk Level**
-- See how many transactions were flagged
-- Expand **Risk Rules Applied** to see the rule breakdown
+Navigate to **Risk Analysis** to adjust the high-value threshold, view the overall risk score, and see all flagged transactions with explanations.
 
 ---
 
@@ -483,13 +492,13 @@ CREDIT,UPI,3000,3524.8,2023-08-22 06:19:13+00:00,2023-08-22,b87c4941-...
 | Priority | Feature | Status |
 |---|---|---|
 | 🔴 High | SHAP-Based Transaction Explanations | Planned |
-| 🔴 High | Spending DNA Fingerprint (per-user behavioral profile) | Planned |
+| 🔴 High | Spending DNA Fingerprint | Planned |
 | 🔴 High | Auto-Generated Forensic Report (LLM) | Planned |
-| 🟡 Medium | Confidence Corridors (uncertainty bands) | Planned |
+| 🔴 High | Smurfing / AML Structuring Detector | Planned |
+| 🟡 Medium | Confidence Corridors | Planned |
 | 🟡 Medium | Circadian Rhythm Violation Detection | Planned |
 | 🟡 Medium | Financial Stress Index (FSI) | Planned |
 | 🟡 Medium | Cash Flow Prediction Engine | Planned |
-| 🟢 Low | PDF & scanned image ingestion (OCR) | Future |
 | 🟢 Low | Multi-account comparison view | Future |
 | 🟢 Low | SAR / Regulatory report auto-filing | Future |
 | 🟢 Low | Federated anomaly learning across branches | Future |
@@ -498,10 +507,10 @@ CREDIT,UPI,3000,3524.8,2023-08-22 06:19:13+00:00,2023-08-22,b87c4941-...
 
 ## 🔒 Privacy & Security
 
-- No transaction data is stored on any server — all processing happens **in-memory** during the session
-- No data is transmitted to third parties
+- All processing happens **in-memory** during the session — no data is stored on any server
+- No transaction data is transmitted to third parties
 - Session state is cleared on browser close
-- Future LLM report generation will use anonymized, PII-masked data before API calls
+- LLM report generation uses PII-masked, anonymized data before any API calls
 
 ---
 
