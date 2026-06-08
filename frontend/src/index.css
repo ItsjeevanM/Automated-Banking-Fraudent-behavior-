@@ -1,111 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts already loaded in index.html ── */
+
+/* ── CSS Custom Properties ── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --bg:      #040d1a;
+  --bg2:     #071428;
+  --surface: #0a1f3d;
+  --surface2:#0f2a50;
+  --teal:    #00d4aa;
+  --teal2:   #00b894;
+  --amber:   #f59e0b;
+  --red:     #ef4444;
+  --blue:    #3b82f6;
+  --text:    #e8f0fe;
+  --muted:   #6b82a8;
+  --border:  rgba(0,212,170,0.15);
+  --glow:    0 0 40px rgba(0,212,170,0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+/* ── Scrollbar ── */
+::-webkit-scrollbar          { width: 5px; }
+::-webkit-scrollbar-track    { background: var(--bg); }
+::-webkit-scrollbar-thumb    { background: var(--surface2); border-radius: 3px; }
+
+/* ── Keyframes ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0);     }
+  50%      { transform: translateY(-13px); }
+}
+@keyframes pulse2 {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%      { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
+/* ── Animation utilities (used via className) ── */
+.anim-fade-up       { animation: fadeUp  0.6s ease both; }
+.anim-fade-up-d1    { animation: fadeUp  0.6s 0.1s ease both; }
+.anim-fade-up-d2    { animation: fadeUp  0.6s 0.2s ease both; }
+.anim-fade-up-d3    { animation: fadeUp  0.6s 0.3s ease both; }
+.anim-fade-up-d4    { animation: fadeUp  0.6s 0.4s ease both; }
+.anim-fade-in       { animation: fadeIn  0.8s 0.5s ease both; }
+.anim-float         { animation: float   6s   ease-in-out infinite; }
+.anim-pulse         { animation: pulse2  2s   infinite; }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/* ── Page transition ── */
+.page-enter         { animation: fadeUp 0.25s ease both; }
+
+/* ── Reusable component layer ── */
+@layer components {
+
+  /* Surface card */
+  .card {
+    @apply bg-surface border rounded-2xl;
+    border-color: var(--border);
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+  /* Section label (mono tag line) */
+  .section-label {
+    @apply flex items-center gap-2.5 uppercase tracking-widest text-teal mb-4;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
   }
-}
-p {
-  margin: 0;
-}
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--teal);
+  }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+  /* Primary button */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 font-semibold rounded-lg cursor-pointer transition-all duration-200 border-0;
+    padding: 13px 28px;
+    background: var(--teal);
+    color: #040d1a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+  }
+  .btn-primary:hover {
+    background: var(--teal2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,212,170,0.3);
+  }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  /* Ghost button */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 font-medium rounded-lg cursor-pointer transition-all duration-200 bg-transparent;
+    padding: 13px 28px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+  }
+  .btn-ghost:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: rgba(0,212,170,0.05);
+  }
+
+  /* Mono chip / badge */
+  .chip {
+    @apply inline-block rounded-md px-3 py-1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+  }
+  .chip-teal {
+    background: rgba(0,212,170,0.07);
+    border-color: rgba(0,212,170,0.25);
+    color: var(--teal);
+  }
+  .chip-red {
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.25);
+    color: #ef4444;
+  }
+  .chip-amber {
+    background: rgba(245,158,11,0.12);
+    border-color: rgba(245,158,11,0.3);
+    color: var(--amber);
+  }
+
+  /* Risk/finding dot */
+  .dot-red    { @apply w-1.5 h-1.5 rounded-full shrink-0 mt-1.5; background: #ef4444; }
+  .dot-amber  { @apply w-1.5 h-1.5 rounded-full shrink-0 mt-1.5; background: var(--amber); }
+  .dot-teal   { @apply w-1.5 h-1.5 rounded-full shrink-0 mt-1.5; background: var(--teal); }
+
+  /* Table styles */
+  .data-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .data-table th {
+    @apply text-left px-4 py-2.5 uppercase tracking-wider;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .data-table td {
+    @apply px-4 py-3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(0,212,170,0.03); }
+
+  /* Spinner */
+  .spinner {
+    @apply rounded-full border-2;
+    border-color: var(--surface2);
+    border-top-color: var(--teal);
+    animation: spin 0.8s linear infinite;
+  }
 }
