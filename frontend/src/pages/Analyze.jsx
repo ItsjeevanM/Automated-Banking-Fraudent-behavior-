@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import CashflowDashboard from '../components/CashflowDashboard'
 import UploadBox     from '../components/UploadBox'
 import SummaryCards  from '../components/SummaryCards'
 import RiskCard      from '../components/RiskCard'
@@ -161,7 +162,11 @@ export default function Analyze() {
               <TransactionTypeChart data={results.transactionTypes} />
             </div>
           </div>
-
+          {/* ── Cash Flow Forecast ── */}
+<div>
+  <p className="section-label mb-5">Cash Flow Forecast</p>
+  <CashflowDashboard data={results.debitCredit} />
+</div>
           {/* ── Risk Analysis ── */}
           <div>
             <p className="section-label mb-5">Risk Analysis</p>
