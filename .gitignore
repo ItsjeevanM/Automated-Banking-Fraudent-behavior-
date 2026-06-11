@@ -7,8 +7,10 @@ __pycache__/
 # Backend
 analytics_report.json
 risk_report.json
+debug_report_generator_output.json
 __pycache__
 uploads
+results
 
 # Database
 *.db

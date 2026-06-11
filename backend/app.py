@@ -182,10 +182,10 @@ def step_optional_services(
     """
     # (module_import_path, namespace_key_in_report)
     optional: list[tuple[str, str]] = [
-        ("services.risk_engine",       "risk"),
-        ("services.anomaly_detector",  "anomalies"),
-        ("services.llm_summary",       "llm"),
-        ("services.report_generator",  "formatted_report"),
+        ("services.unified_fraud_engine", "fraud"),   # replaces risk_engine + anomaly_detector
+        ("services.llm_summary",          "llm"),
+        ("services.report_generator",     "formatted_report"),
+        ("services.cashflow_predictor",   "cashflow"),
     ]
 
     for import_path, report_key in optional:
@@ -266,7 +266,9 @@ def step_print_summary(report: dict[str, Any], df: pd.DataFrame) -> None:
 
     # Optional module results
     if "risk" in report:
-        print(f"  Risk flags            : {report['risk'].get('flag_count', '—')}")
+        risk_summary = report['risk'].get('summary', report['risk'])
+        flag_count = risk_summary.get('flagged_count', risk_summary.get('flag_count', '—'))
+        print(f"  Risk flags            : {flag_count}")
     if "anomalies" in report:
         print(f"  Anomalies detected    : {report['anomalies'].get('anomaly_count', '—')}")
     if "llm" in report and report["llm"].get("summary"):
