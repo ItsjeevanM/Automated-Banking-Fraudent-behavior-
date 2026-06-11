@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 
 const LINKS = [
-  { to: '/',         label: 'Overview' },
+  { to: '/', label: 'Overview' },
   { to: '/workflow', label: 'Workflow' },
   { to: '/features', label: 'Features' },
-  { to: '/analyze',  label: 'Analyze'  },
+  { to: '/analyze', label: 'Analyze' },
 ]
 
 export default function Footer() {
@@ -27,7 +27,7 @@ export default function Footer() {
           BankForensiq
         </div>
         <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: 'var(--muted)' }}>
-          © 2026 · Jeevan M · Nidhi Mallikarjuna · Hemanth · PES University
+          © 2026 · Jeevan M · Nidhi Mallikarjuna · Hemanth · Tejasvi K S · PES University
         </p>
       </div>
 
