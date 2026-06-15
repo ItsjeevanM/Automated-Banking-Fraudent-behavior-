@@ -289,8 +289,8 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
             if c in df.columns:
                 df["merchant"] = df[c]
                 break
-    if "merchant" not in df.columns:
-        df["merchant"] = "UNKNOWN"
+    if "mode" not in df.columns and "transaction_type" in df.columns:
+        df["mode"] = df["transaction_type"]
     df["merchant"] = df["merchant"].fillna("UNKNOWN").astype(str)
 
     if "narration" not in df.columns:
@@ -298,8 +298,8 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
             if c in df.columns:
                 df["narration"] = df[c]
                 break
-    if "narration" not in df.columns:
-        df["narration"] = "UNKNOWN"
+    if "narration" not in df.columns and "merchant" in df.columns:
+        df["narration"] = df["merchant"]
     df["narration"] = df["narration"].fillna("UNKNOWN").astype(str)
 
     if "mode" not in df.columns:
@@ -1213,15 +1213,17 @@ class MLScorer:
         n = len(df)
 
         if self.rules_only:
+            fallback_probs = self._rule_fallback_prob(X)
+            calibrated_fallback = self._calibrate(fallback_probs * 100.0)
             return {
-                "ml_score": np.full(n, 50.0),
-                "xgb_component": np.full(n, 27.5),
-                "rf_component": np.full(n, 7.5),
-                "velocity_component": np.full(n, 7.5),
-                "spending_dev_component": np.full(n, 5.0),
-                "time_context_component": np.full(n, 2.5),
-                "fraud_type": ["Normal"] * n,
-                "fraud_probability": np.full(n, 0.50),
+                "ml_score": calibrated_fallback,
+                "xgb_component": fallback_probs * 27.5,
+                "rf_component": fallback_probs * 7.5,
+                "velocity_component": self._velocity_score(df, X) * 7.5,
+                "spending_dev_component": self._spending_deviation(df, X) * 5.0,
+                "time_context_component": self._time_context_score(X) * 2.5,
+                "fraud_type": self._heuristic_fraud_type(X, calibrated_fallback),
+                "fraud_probability": calibrated_fallback / 100.0,
                 "shap_top_feature": ["N/A"] * n,
                 "confidence_score": [1.0] * n,
             }
@@ -1233,7 +1235,6 @@ class MLScorer:
         agreement = 1.0 - np.abs(xgb_prob - rf_prob)
         c2 = rf_prob * agreement * 15.0
 
-        # Confidence score: lower std across trees => higher confidence
         if self.rf:
             tree_preds = np.array([t.predict_proba(X)[:, 1] for t in self.rf.estimators_])
             confidence = (1.0 - tree_preds.std(axis=0)).tolist()
@@ -1248,7 +1249,6 @@ class MLScorer:
         calibrated = self._calibrate(raw_score)
         fraud_types = self._get_fraud_type(X, calibrated)
 
-        # SHAP top feature extraction
         if HAS_SHAP and self.xgb:
             try:
                 exp = shap.TreeExplainer(self.xgb)
@@ -1288,31 +1288,24 @@ class FusionLayer:
         return float(_calibrate_score(raw))
 
     def fuse(self, ml_score: float, rule_flags: list[str], rules_only_mode: bool = False) -> dict[str, Any]:
-        # a) BASE: ml_score
         base_score = ml_score
-
-        # b) RULE BOOST with diminishing returns:
         rule_points_map = self.config.RULE_POINTS
         fired_points = sorted([rule_points_map[flag] for flag in rule_flags if flag in rule_points_map], reverse=True)
-
         diminishing_sum = 0.0
-        boost_weight = self.config.FUSION_BOOST_WEIGHT
         
         for idx, pts in enumerate(fired_points):
             if idx == 0:
                 factor = 1.0
             elif idx == 1:
-                factor = 0.60
+                factor = 0.50
             elif idx == 2:
-                factor = 0.30
+                factor = 0.25
             else:
                 factor = 0.10
-            diminishing_sum += pts * boost_weight * factor
+            diminishing_sum += pts * factor
 
-        # Normalize: rule_boost = diminishing_sum / 85 * 15
-        rule_boost = (diminishing_sum / 85.0) * 15.0
+        rule_boost = min(diminishing_sum, 35.0)
 
-        # c) HARD OVERRIDES
         flags_set = set(rule_flags)
         hard_override_applied = False
         override_rule = None
@@ -1335,7 +1328,6 @@ class FusionLayer:
             hard_override_applied = True
             override_rule = "REPEATED_TRANSACTION + RAPID_TRANSACTION"
 
-        # d) ML SUPPRESSION
         suppression_applied = False
         if len(rule_flags) == 1:
             fired_rule = rule_flags[0]
@@ -1346,7 +1338,6 @@ class FusionLayer:
                 rule_boost *= 0.4
                 suppression_applied = True
 
-        # e) DOMINANT SIGNAL
         if rules_only_mode:
             dominant = "RULES"
         else:
@@ -1357,13 +1348,11 @@ class FusionLayer:
             else:
                 dominant = "BOTH"
 
-        # f) FINAL SCORE
         raw_final = base_score + rule_boost
         if hard_override_applied:
             raw_final = max(raw_final, override_min_score)
 
-        final_score = self._calibrate(raw_final)
-        final_score = float(np.clip(final_score, 0.0, 100.0))
+        final_score = float(np.clip(raw_final, 0.0, 100.0))
 
         return {
             "final_score": final_score,
@@ -1372,63 +1361,6 @@ class FusionLayer:
             "override_rule": override_rule,
             "suppression_applied": suppression_applied,
             "dominant_signal": dominant,
-        }
-
-
-# ===========================================================================
-# 10. EVIDENCE AGGREGATOR CLASS
-# ===========================================================================
-
-class EvidenceAggregator:
-    """
-    Aggregates indicators and fusion decisions into a structured evidence pack.
-    """
-    @staticmethod
-    def aggregate(
-        ml_score: float,
-        xgb_comp: float,
-        rf_comp: float,
-        vel_comp: float,
-        spend_comp: float,
-        time_comp: float,
-        fraud_type: str,
-        fraud_prob: float,
-        rule_flags: list[str],
-        rule_reasons: list[str],
-        rule_score_raw: int,
-        rule_boost: float,
-        hard_override: bool,
-        override_rule: Optional[str],
-        suppression: bool,
-        final_score: float,
-        dominant: str
-    ) -> dict[str, Any]:
-        return {
-            "ml_evidence": {
-                "xgb_score": float(xgb_comp),
-                "rf_score": float(rf_comp),
-                "velocity_score": float(vel_comp),
-                "spending_dev_score": float(spend_comp),
-                "time_context_score": float(time_comp),
-                "ml_base_score": float(ml_score),
-                "fraud_type": str(fraud_type),
-                "fraud_probability": float(fraud_prob)
-            },
-            "rule_evidence": {
-                "flags_fired": list(rule_flags),
-                "reasons": list(rule_reasons),
-                "rule_points_raw": int(rule_score_raw),
-                "rule_boost_applied": float(rule_boost)
-            },
-            "fusion_metadata": {
-                "ml_base_score": float(ml_score),
-                "rule_boost": float(rule_boost),
-                "hard_override_applied": bool(hard_override),
-                "override_rule": override_rule,
-                "suppression_applied": bool(suppression),
-                "final_score": float(final_score),
-                "dominant_signal": str(dominant)
-            }
         }
 
 
@@ -1883,16 +1815,7 @@ def run(df: pd.DataFrame, report: dict) -> dict:
         "flagged_transactions": flagged_records,
         "episodes":             result.episodes,
         "llm_prompt":           result.llm_prompt,
-    }
-
-    # Save standalone file
-    out_path = os.path.join(CONFIG.RESULTS_DIR, "fraud_report.json")
-    try:
-        with open(out_path, "w", encoding="utf-8") as fh:
-            json.dump(output, fh, indent=2, default=str)
-        logger.info("Fraud report saved → %s", out_path)
-    except Exception as e:
-        logger.warning("Could not save fraud_report.json: %s", e)
+    } 
 
     return output
 
