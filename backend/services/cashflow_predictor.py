@@ -260,6 +260,8 @@ def generate_forecast(metrics: dict[str, Any]) -> dict[str, Any]:
     balance = metrics["current_balance"]
     end     = metrics["statement_end"]
 
+    balance = max(balance, 0)
+
     base_date = (
         end.date() if isinstance(end, pd.Timestamp) else date.today()
     )
@@ -321,6 +323,9 @@ def generate_warnings(metrics: dict[str, Any]) -> list[str]:
     daily       = metrics["_daily_spend"]
     debit_rows  = metrics["_debit_rows"]
     credit_rows = metrics["_credit_rows"]
+
+    balance = max(balance, 0)
+    
     runway      = int(balance / rate) if rate > 0 else None
 
     # ── 1. Low balance ───────────────────────────────────────────────────

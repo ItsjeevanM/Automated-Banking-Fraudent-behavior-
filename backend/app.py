@@ -186,6 +186,7 @@ def step_optional_services(
         ("services.llm_summary",          "llm"),
         ("services.report_generator",     "formatted_report"),
         ("services.cashflow_predictor",   "cashflow"),
+        ("services.llm_sender",           "llm_input"),
     ]
 
     for import_path, report_key in optional:
@@ -217,12 +218,32 @@ def step_optional_services(
     return report
 
 
+# Maps each report key to its own output filename
+_REPORT_FILE_MAP: dict[str, str] = {
+    "statistics":       "analytics_output.json",
+    "fraud":            "fraud_output.json",
+    "cashflow":         "cashflow_output.json",
+    "formatted_report": "report_output.json",
+    "llm":              "llm_output.json",
+    "llm_input":        "llm_input.json",
+}
+
 def step_save_report(report: dict[str, Any], output_path: Path) -> None:
-    """Gate 6 — persist the report to JSON."""
+    """Gate 6 — write one JSON file per module, plus the master combined file."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Write one file per module key
+    for key, filename in _REPORT_FILE_MAP.items():
+        if key in report:
+            file_path = output_path.parent / filename
+            with file_path.open("w", encoding="utf-8") as fh:
+                json.dump(report[key], fh, indent=2, default=str)
+            logger.info("Saved %s → %s", key, file_path.resolve())
+
+    # Write the master combined file
     with output_path.open("w", encoding="utf-8") as fh:
         json.dump(report, fh, indent=2, default=str)
-    logger.info("Report saved → %s", output_path.resolve())
+    logger.info("Master report saved → %s", output_path.resolve())
 
 
 def step_print_summary(report: dict[str, Any], df: pd.DataFrame) -> None:
@@ -276,7 +297,9 @@ def step_print_summary(report: dict[str, Any], df: pd.DataFrame) -> None:
         print(f"\n  AI Summary:\n  {snippet}")
 
     print(sep)
-    print(f"  Full report           : analytics_report.json")
+    print(f"  Output files          : analytics_output.json, fraud_output.json,")
+    print(f"                          cashflow_output.json, report_output.json")
+    print(f"  Master report         : analytics_report.json")
     print(f"{sep}\n")
 
 
@@ -297,7 +320,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("analytics_report.json"),
+        default=Path("results/analytics_report.json"),
         metavar="FILE",
         help="Output path for the JSON report (default: analytics_report.json).",
     )
