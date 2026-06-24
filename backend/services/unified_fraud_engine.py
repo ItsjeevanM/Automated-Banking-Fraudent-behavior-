@@ -9,6 +9,7 @@ Combines Rule-Based and Machine Learning Fraud Scopes.
 from __future__ import annotations
 
 import os
+import zlib
 import sys
 import re
 import json
@@ -237,13 +238,18 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
                 break
     if "amount" not in df.columns:
         df["amount"] = 0.0
-    df["amount"] = pd.to_numeric(df["amount"], errors="coerce").fillna(0.0)
+    # FIX 1a: strip commas/currency chars before numeric conversion
+    df["amount"] = pd.to_numeric(
+        df["amount"].astype(str).str.replace(r"[^\d.]", "", regex=True),
+        errors="coerce"
+    ).fillna(0.0)
 
     # 2. Map 'date' and 'time'
     date_dt = None
     for c in ["transactionTimestamp", "date", "timestamp", "Date", "TransactionDate", "Transaction Date"]:
         if c in df.columns:
-            date_dt = pd.to_datetime(df[c], errors="coerce")
+            # FIX 2a: dayfirst=True for Indian DD/MM/YYYY dates
+            date_dt = pd.to_datetime(df[c], errors="coerce", dayfirst=True)
             break
     
     if date_dt is None or date_dt.isna().all():
@@ -255,7 +261,8 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
         for c in ["Time", "transactionTimestamp", "timestamp", "date", "Date", "TransactionDate"]:
             if c in df.columns:
                 try:
-                    ts = pd.to_datetime(df[c], errors="coerce")
+                    # FIX 2b: dayfirst=True for secondary time parse
+                    ts = pd.to_datetime(df[c], errors="coerce", dayfirst=True)
                     df["time"] = ts.dt.strftime("%H:%M:%S").fillna("12:00:00")
                 except Exception:
                     df["time"] = "12:00:00"
@@ -276,9 +283,14 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
             if c in df.columns:
                 df["balance_after"] = df[c]
                 break
+    # FIX 1b: use a static safe fallback instead of amount * 5
     if "balance_after" not in df.columns:
-        df["balance_after"] = df["amount"] * 5
-    df["balance_after"] = pd.to_numeric(df["balance_after"], errors="coerce").fillna(0.0)
+        df["balance_after"] = 999999.0
+    # FIX 1c: strip commas/currency chars from balance before numeric conversion
+    df["balance_after"] = pd.to_numeric(
+        df["balance_after"].astype(str).str.replace(r"[^\d.]", "", regex=True),
+        errors="coerce"
+    ).fillna(0.0)
 
     if "balance" not in df.columns:
         df["balance"] = df["balance_after"]
@@ -329,14 +341,17 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
         df["debit_credit"] = "DEBIT"
     df["debit_credit"] = df["debit_credit"].fillna("DEBIT").astype(str)
 
-    # Encodings
+    # FIX 3: Replace LabelEncoder with session-stable deterministic CRC32 hashing
     for col_out, src in [
         ("merchant_encoded", "merchant"),
         ("channel_encoded", "mode"),
         ("txn_type_encoded", "transaction_type"),
     ]:
         if src in df.columns:
-            df[col_out] = LabelEncoder().fit_transform(df[src].astype(str).fillna("UNK"))
+            df[col_out] = (
+                df[src].astype(str).fillna("UNK")
+                .apply(lambda x: zlib.crc32(x.encode("utf-8", "ignore")) % 7)
+            )
         else:
             df[col_out] = 0
 
@@ -1209,31 +1224,32 @@ class MLScorer:
         return types
 
     def score(self, df: pd.DataFrame) -> dict[str, Any]:
-        X = df[FEATURE_COLS].fillna(0.0)
         n = len(df)
 
-        if self.rules_only:
-            fallback_probs = self._rule_fallback_prob(X)
-            calibrated_fallback = self._calibrate(fallback_probs * 100.0)
-            return {
-                "ml_score": calibrated_fallback,
-                "xgb_component": fallback_probs * 27.5,
-                "rf_component": fallback_probs * 7.5,
-                "velocity_component": self._velocity_score(df, X) * 7.5,
-                "spending_dev_component": self._spending_deviation(df, X) * 5.0,
-                "time_context_component": self._time_context_score(X) * 2.5,
-                "fraud_type": self._heuristic_fraud_type(X, calibrated_fallback),
-                "fraud_probability": calibrated_fallback / 100.0,
-                "shap_top_feature": ["N/A"] * n,
-                "confidence_score": [1.0] * n,
-            }
+        # ---- Pass 1: compute the TRUE anomaly score from Isolation Forest ----
+        X_for_if = df[FEATURE_COLS].fillna(0.0).copy()
+        X_for_if['anomaly_score_raw'] = 0.0  # neutral placeholder until Pass 1 fills it in
 
-        xgb_prob = self._get_xgb_prob(X)
-        c1 = xgb_prob * 55.0
+        if self.scaler:
+            X_if_sc = pd.DataFrame(self.scaler.transform(X_for_if), columns=FEATURE_COLS, index=X_for_if.index)
+        else:
+            X_if_sc = X_for_if
 
-        rf_prob = self._get_rf_prob(X, xgb_prob)
-        agreement = 1.0 - np.abs(xgb_prob - rf_prob)
-        c2 = rf_prob * agreement * 15.0
+        if self.iso:
+            X_for_if['anomaly_score_raw'] = self.iso.score_samples(X_if_sc)
+
+        # ---- Pass 2: inject the true anomaly scores, then rescale everything ----
+        X = df[FEATURE_COLS].fillna(0.0).copy()
+        X['anomaly_score_raw'] = X_for_if['anomaly_score_raw']
+
+        if self.scaler:
+            X_scaled = pd.DataFrame(self.scaler.transform(X), columns=FEATURE_COLS, index=X.index)
+        else:
+            X_scaled = X
+
+        # Critical: the supervised models receive the SCALED matrix, never raw X.
+        xgb_prob = self._get_xgb_prob(X_scaled)
+        rf_prob = self._get_rf_prob(X_scaled, xgb_prob)
 
         if self.rf:
             tree_preds = np.array([t.predict_proba(X)[:, 1] for t in self.rf.estimators_])
@@ -1241,13 +1257,30 @@ class MLScorer:
         else:
             confidence = [1.0] * len(X)
 
-        c3 = self._velocity_score(df, X) * 15.0
-        c4 = self._spending_deviation(df, X) * 10.0
-        c5 = self._time_context_score(X) * 5.0
+        # ---- Convert the raw Isolation Forest output into a 0-100 iso_score ----
+        # sklearn's score_samples(): the LOWER the value, the MORE abnormal the point.
+        # Invert + min-max scale onto 0-100 (same convention as FraudModelTrainer._train_iso),
+        # so a higher iso_score means more anomalous.
+        raw_anomaly = X_for_if['anomaly_score_raw'].values.astype(float)
+        if self.iso and raw_anomaly.max() != raw_anomaly.min():
+            iso_norm = 1.0 - (raw_anomaly - raw_anomaly.min()) / (raw_anomaly.max() - raw_anomaly.min() + 1e-9)
+        else:
+            iso_norm = np.zeros(len(raw_anomaly))
+        iso_score = np.clip(iso_norm * 100.0, 0.0, 100.0)
+
+        vel = self._velocity_score(df, X)
+        spend = self._spending_deviation(df, X)
+
+        # ---- Reweighted combination: Isolation Forest is now the dominant signal ----
+        c1 = iso_score * 0.60   # Isolation Forest   - 60% weight
+        c2 = xgb_prob * 15.0    # XGBoost            - 15% weight
+        c3 = rf_prob * 5.0      # Random Forest      -  5% weight
+        c4 = vel * 10.0         # Velocity heuristic - 10% weight
+        c5 = spend * 10.0       # Spending deviation - 10% weight
 
         raw_score = c1 + c2 + c3 + c4 + c5
-        calibrated = self._calibrate(raw_score)
-        fraud_types = self._get_fraud_type(X, calibrated)
+        final_ml_score = np.clip(raw_score, 0.0, 100.0)
+        fraud_types = self._get_fraud_type(X, final_ml_score)
 
         if HAS_SHAP and self.xgb:
             try:
@@ -1260,14 +1293,14 @@ class MLScorer:
             shap_top = ["N/A"] * len(X)
 
         return {
-            "ml_score": calibrated,
-            "xgb_component": c1,
-            "rf_component": c2,
-            "velocity_component": c3,
-            "spending_dev_component": c4,
-            "time_context_component": c5,
+            "ml_score": final_ml_score,
+            "iso_component": c1,
+            "xgb_component": c2,
+            "rf_component": c3,
+            "velocity_component": c4,
+            "spending_dev_component": c5,
             "fraud_type": fraud_types,
-            "fraud_probability": calibrated / 100.0,
+            "fraud_probability": final_ml_score / 100.0,
             "shap_top_feature": shap_top,
             "confidence_score": confidence,
         }
@@ -1288,11 +1321,16 @@ class FusionLayer:
         return float(_calibrate_score(raw))
 
     def fuse(self, ml_score: float, rule_flags: list[str], rules_only_mode: bool = False) -> dict[str, Any]:
-        base_score = ml_score
+        # --- "Deterministic-First, Anomaly-Weighted" fusion -----------------
+        # Rules are boss: the rule-derived base score is computed entirely on
+        # its own and the ML score can only ever ADD a small bonus on top of
+        # it. There is no longer any path by which ml_score can multiply,
+        # penalize, or suppress the rule signal.
+
         rule_points_map = self.config.RULE_POINTS
         fired_points = sorted([rule_points_map[flag] for flag in rule_flags if flag in rule_points_map], reverse=True)
         diminishing_sum = 0.0
-        
+
         for idx, pts in enumerate(fired_points):
             if idx == 0:
                 factor = 1.0
@@ -1304,7 +1342,8 @@ class FusionLayer:
                 factor = 0.10
             diminishing_sum += pts * factor
 
-        rule_boost = min(diminishing_sum, 35.0)
+        # Base Score (Rules): capped at 85.0, fully independent of ml_score.
+        rule_base_score = min(diminishing_sum*3, 70.0)
 
         flags_set = set(rule_flags)
         hard_override_applied = False
@@ -1328,27 +1367,19 @@ class FusionLayer:
             hard_override_applied = True
             override_rule = "REPEATED_TRANSACTION + RAPID_TRANSACTION"
 
-        suppression_applied = False
-        if len(rule_flags) == 1:
-            fired_rule = rule_flags[0]
-            if ml_score < 15.0 and fired_rule in ("LATE_NIGHT_TRANSACTION", "SPENDING_SPIKE"):
-                rule_boost *= 0.2
-                suppression_applied = True
-            elif ml_score < 20.0:
-                rule_boost *= 0.4
-                suppression_applied = True
+        # Bonus (ML): a strict additive bonus, capped at 15 points. No suppression,
+        # no multiplication of rule_base_score — ml_score can only ever help.
+        ml_bonus = (ml_score / 100.0) * 30.0
 
+        # Dominant Signal: whichever side contributed more to raw_final.
         if rules_only_mode:
             dominant = "RULES"
+        elif rule_base_score > ml_bonus:
+            dominant = "RULES"
         else:
-            if rule_boost > 8.0 and ml_score < 50.0:
-                dominant = "RULES"
-            elif ml_score > 60.0 and rule_boost < 5.0:
-                dominant = "ML"
-            else:
-                dominant = "BOTH"
+            dominant = "ML"
 
-        raw_final = base_score + rule_boost
+        raw_final = rule_base_score + ml_bonus
         if hard_override_applied:
             raw_final = max(raw_final, override_min_score)
 
@@ -1356,14 +1387,14 @@ class FusionLayer:
 
         return {
             "final_score": final_score,
-            "rule_boost": rule_boost,
+            "rule_boost": rule_base_score,
+            "ml_bonus": ml_bonus,
             "hard_override_applied": hard_override_applied,
             "override_rule": override_rule,
-            "suppression_applied": suppression_applied,
+            "suppression_applied": False,
             "dominant_signal": dominant,
         }
-
-
+    
 # ===========================================================================
 # 11. REPORT BUILDER CLASS
 # ===========================================================================
@@ -1624,13 +1655,15 @@ class UnifiedFraudEngine:
 
         # Stage 3: ML Scoring
         ml_results = self.ml_scorer.score(df_engineered)
-        
+        # FIX 5: freeze a copy of raw ML scores before the fusion loop can mutate them
+        raw_ml_scores = ml_results["ml_score"].copy()
+
         ml_scores = ml_results["ml_score"]
+        iso_comps = ml_results["iso_component"]
         xgb_comps = ml_results["xgb_component"]
         rf_comps = ml_results["rf_component"]
         vel_comps = ml_results["velocity_component"]
         spend_comps = ml_results["spending_dev_component"]
-        time_comps = ml_results["time_context_component"]
         fraud_types = ml_results["fraud_type"]
         fraud_probs = ml_results["fraud_probability"]
 
@@ -1669,11 +1702,11 @@ class UnifiedFraudEngine:
                 combined_reason = f"ML model flagged as {fraud_types[i]} ({ml_scores[i]:.0f}/100) + Rules confirmed: {top_2_str}"
             elif dominant == "ML":
                 components_list = [
-                    ("XGBoost", xgb_comps[i], 55.0),
-                    ("Random Forest", rf_comps[i], 15.0),
-                    ("Velocity", vel_comps[i], 15.0),
-                    ("Spending Deviation", spend_comps[i], 10.0),
-                    ("Time Context", time_comps[i], 5.0)
+                    ("Isolation Forest", iso_comps[i], 60.0),
+                    ("XGBoost", xgb_comps[i], 15.0),
+                    ("Random Forest", rf_comps[i], 5.0),
+                    ("Velocity", vel_comps[i], 10.0),
+                    ("Spending Deviation", spend_comps[i], 10.0)
                 ]
                 top_comp = max(components_list, key=lambda x: x[1])
                 top_shap_or_component = f"dominant component: {top_comp[0]} ({top_comp[1]:.1f}/{top_comp[2]} pts)"
@@ -1700,12 +1733,13 @@ class UnifiedFraudEngine:
         scored_df["rule_score"] = rule_scores
         scored_df["rule_flags"] = rule_flags
         scored_df["rule_reasons"] = rule_reasons
-        scored_df["ml_score"] = ml_scores
+        # FIX 5: assign the frozen raw copy, not the potentially-mutated ml_scores
+        scored_df["ml_score"] = raw_ml_scores
+        scored_df["score_iso_component"] = iso_comps
         scored_df["score_xgb_component"] = xgb_comps
         scored_df["score_rf_component"] = rf_comps
         scored_df["score_velocity"] = vel_comps
         scored_df["score_spending_dev"] = spend_comps
-        scored_df["score_time_context"] = time_comps
         scored_df["fraud_type_predicted"] = fraud_types
         scored_df["fraud_probability"] = fraud_probs
         scored_df["shap_top_feature"] = ml_results["shap_top_feature"]
@@ -1739,7 +1773,6 @@ class UnifiedFraudEngine:
             llm_prompt=llm_prompt,
             flagged_df=flagged_df
         )
-
 
 # ===========================================================================
 # 13. FRAUD RESULT DATACLASS
