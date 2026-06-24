@@ -187,6 +187,7 @@ def step_optional_services(
         ("services.report_generator",     "formatted_report"),
         ("services.cashflow_predictor",   "cashflow"),
         ("services.llm_sender",           "llm_input"),
+        ("services.cloud_gemini",         "gemini"),
     ]
 
     for import_path, report_key in optional:
@@ -226,6 +227,7 @@ _REPORT_FILE_MAP: dict[str, str] = {
     "formatted_report": "report_output.json",
     "llm":              "llm_output.json",
     "llm_input":        "llm_input.json",
+    "gemini":           "gemini_output.json",
 }
 
 def step_save_report(report: dict[str, Any], output_path: Path) -> None:
