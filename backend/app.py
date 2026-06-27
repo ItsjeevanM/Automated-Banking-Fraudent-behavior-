@@ -184,10 +184,10 @@ def step_optional_services(
     optional: list[tuple[str, str]] = [
         ("services.unified_fraud_engine", "fraud"),   # replaces risk_engine + anomaly_detector
         ("services.llm_summary",          "llm"),
-        ("services.report_generator",     "formatted_report"),
         ("services.cashflow_predictor",   "cashflow"),
         ("services.llm_sender",           "llm_input"),
         ("services.cloud_gemini",         "gemini"),
+        ("services.pdf_generator",     "formatted_report"),
     ]
 
     for import_path, report_key in optional:
