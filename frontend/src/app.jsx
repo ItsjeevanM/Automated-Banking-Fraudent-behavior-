@@ -1,11 +1,13 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
+import Navbar   from './components/Navbar'
+import Footer   from './components/Footer'
 import Home     from './pages/Home'
 import Workflow from './pages/Workflow'
 import Features from './pages/Features'
 import Analyze  from './pages/Analyze'
+import Login    from './pages/Login'
+import Register from './pages/Register'
 
 const ROUTES = [
   { path: '/',          label: 'Overview', idx: 1 },
@@ -17,6 +19,17 @@ const ROUTES = [
 export default function App() {
   const location = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [location.pathname])
+
+  // Auth pages render full-screen without the shell chrome
+  const isAuthPage = ['/login', '/register'].includes(location.pathname)
+  if (isAuthPage) {
+    return (
+      <Routes>
+        <Route path="/login"    element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    )
+  }
 
   const currentRoute = ROUTES.find(r => r.path === location.pathname) ?? ROUTES[0]
 

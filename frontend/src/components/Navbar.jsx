@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 
 const NAV_LINKS = [
   { to: '/',          label: 'Overview'  },
@@ -10,12 +10,36 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('access_token'))
+  const navigate = useNavigate()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
     window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+    // Re-check auth state whenever storage changes (cross-tab)
+    const onStorage = () => setIsLoggedIn(!!localStorage.getItem('access_token'))
+    window.addEventListener('storage', onStorage)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('storage', onStorage)
+    }
   }, [])
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('access_token')
+    if (token) {
+      try {
+        await fetch('http://localhost:8000/auth/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
+        })
+      } catch (_) { /* ignore network error */ }
+    }
+    localStorage.removeItem('access_token')
+    setIsLoggedIn(false)
+    navigate('/login')
+  }
 
   return (
     <header
@@ -45,8 +69,8 @@ export default function Navbar() {
         BankForensiq
       </Link>
 
-      {/* Links */}
-      <nav className="flex items-center gap-7">
+      {/* Nav links */}
+      <nav className="flex items-center gap-6">
         {NAV_LINKS.map(({ to, label }) => (
           <NavLink
             key={to}
@@ -63,12 +87,48 @@ export default function Navbar() {
           </NavLink>
         ))}
 
-        <Link
-          to="/analyze"
-          className="btn-primary !py-2 !px-5 !text-sm no-underline"
-        >
-          Upload Statement
-        </Link>
+        {/* Auth controls */}
+        {isLoggedIn ? (
+          <>
+            <Link
+              to="/analyze"
+              id="nav-upload"
+              className="btn-primary no-underline"
+              style={{ padding: '8px 20px', fontSize: '0.88rem' }}
+            >
+              Upload Statement
+            </Link>
+            <button
+              id="nav-logout"
+              onClick={handleLogout}
+              className="btn-ghost"
+              style={{ padding: '8px 18px', fontSize: '0.88rem' }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              id="nav-login"
+              className="no-underline text-sm font-medium"
+              style={{ color: 'var(--muted)', fontFamily: 'DM Sans, sans-serif', transition: 'color .2s' }}
+              onMouseEnter={e => e.target.style.color = 'var(--text)'}
+              onMouseLeave={e => e.target.style.color = 'var(--muted)'}
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              id="nav-register"
+              className="btn-primary no-underline"
+              style={{ padding: '8px 20px', fontSize: '0.88rem' }}
+            >
+              Register
+            </Link>
+          </>
+        )}
       </nav>
     </header>
   )

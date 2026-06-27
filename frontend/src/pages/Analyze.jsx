@@ -18,18 +18,24 @@ import { uploadAndAnalyze } from '../services/api'
 // 'done'    → State C: upload + full results
 
 export default function Analyze() {
-  const [phase,   setPhase]   = useState('idle')     // 'idle' | 'loading' | 'done'
-  const [results, setResults] = useState(null)
-  const [error,   setError]   = useState(null)
+  const [phase,    setPhase]    = useState('idle')     // 'idle' | 'loading' | 'done'
+  const [results,  setResults]  = useState(null)
+  const [error,    setError]    = useState(null)
+  const [jobStage, setJobStage] = useState(null)       // raw job status string
+  const [progress, setProgress] = useState(0)
 
   const handleUpload = async (file) => {
     setPhase('loading')
     setError(null)
+    setJobStage('queued')
+    setProgress(0)
     try {
-      const data = await uploadAndAnalyze(file)
+      const data = await uploadAndAnalyze(file, (job) => {
+        setJobStage(job.status)
+        setProgress(job.progress ?? 0)
+      })
       setResults(data)
       setPhase('done')
-      // Smooth-scroll to results after a tick
       setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior:'smooth' }), 100)
     } catch (err) {
       setError(err.message ?? 'Analysis failed. Please try again.')
@@ -72,23 +78,61 @@ export default function Analyze() {
                 What happens after upload
               </p>
               {[
-                { n:'01', label:'OCR & Field Extraction',  active: phase === 'loading' },
-                { n:'02', label:'Data Cleaning & Standardization', active: false },
-                { n:'03', label:'Risk Scoring (0–100)',    active: false },
-                { n:'04', label:'Anomaly Detection',       active: false },
-                { n:'05', label:'AI Report Generation',    active: false },
-              ].map(({ n, label, active }) => (
-                <div key={n} className="flex items-center gap-3 py-3" style={{ borderBottom:'1px solid rgba(255,255,255,.04)' }}>
-                  <span
-                    className="flex items-center justify-center rounded-md text-xs font-bold shrink-0"
-                    style={{ width:28, height:28, background: active ? 'rgba(0,212,170,.15)' : 'var(--surface2)', fontFamily:'JetBrains Mono, monospace', color: active ? 'var(--teal)' : 'var(--muted)', border: active ? '1px solid rgba(0,212,170,.3)' : '1px solid transparent' }}
-                  >
-                    {n}
-                  </span>
-                  <span className="text-sm" style={{ color: active ? 'var(--text)' : 'var(--muted)' }}>{label}</span>
-                  {active && <span className="spinner ml-auto" style={{ width:14, height:14 }} />}
+                { n:'01', label:'File Upload & Validation',   stages: ['queued']    },
+                { n:'02', label:'OCR & Field Extraction',     stages: ['ocr']       },
+                { n:'03', label:'ML Risk Scoring (0–100)',    stages: ['scoring']   },
+                { n:'04', label:'AI Report Generation',       stages: ['llm']       },
+                { n:'05', label:'Saving Results',             stages: ['done']      },
+              ].map(({ n, label, stages }) => {
+                const active = phase === 'loading' && stages.includes(jobStage)
+                const done   = phase === 'loading' && (
+                  (jobStage === 'ocr'     && n === '01') ||
+                  (jobStage === 'scoring' && ['01','02'].includes(n)) ||
+                  (jobStage === 'llm'     && ['01','02','03'].includes(n)) ||
+                  (jobStage === 'done'    && n !== '05')
+                )
+                return (
+                  <div key={n} className="flex items-center gap-3 py-3" style={{ borderBottom:'1px solid rgba(255,255,255,.04)' }}>
+                    <span
+                      className="flex items-center justify-center rounded-md text-xs font-bold shrink-0"
+                      style={{
+                        width:28, height:28,
+                        background: done   ? 'rgba(0,212,170,.25)'
+                                  : active ? 'rgba(0,212,170,.15)' : 'var(--surface2)',
+                        fontFamily:'JetBrains Mono, monospace',
+                        color: done || active ? 'var(--teal)' : 'var(--muted)',
+                        border: done || active ? '1px solid rgba(0,212,170,.3)' : '1px solid transparent',
+                      }}
+                    >
+                      {done ? '✓' : n}
+                    </span>
+                    <span className="text-sm" style={{ color: done || active ? 'var(--text)' : 'var(--muted)' }}>{label}</span>
+                    {active && <span className="spinner ml-auto" style={{ width:14, height:14 }} />}
+                  </div>
+                )
+              })}
+
+              {/* Progress bar */}
+              {phase === 'loading' && (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{
+                    height: 3, borderRadius: 99,
+                    background: 'var(--surface2)',
+                    overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${progress}%`,
+                      background: 'var(--teal)',
+                      borderRadius: 99,
+                      transition: 'width 0.6s ease',
+                    }} />
+                  </div>
+                  <p style={{ fontFamily:'JetBrains Mono, monospace', fontSize:'0.65rem', color:'var(--muted)', marginTop:4 }}>
+                    {progress}% — {jobStage ?? 'queued'}
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Error */}

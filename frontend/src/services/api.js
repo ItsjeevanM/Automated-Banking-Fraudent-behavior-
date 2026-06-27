@@ -1,162 +1,312 @@
 /**
- * api.js — Data service layer
+ * api.js — Real FastAPI data service layer
  *
- * All UI components import from here.
- * When FastAPI is ready:
- *   1. Replace MOCK_* constants with real fetch() calls.
- *   2. Update the BASE_URL constant.
- *   3. No changes required in any page or component.
+ * Flow for uploadAndAnalyze:
+ *   1. POST /upload          → { job_id, upload_id }
+ *   2. Poll GET /jobs/{id}   → wait for status === "done" | "failed"
+ *   3. GET /reports/         → grab the latest report_id
+ *   4. GET /reports/{id}     → portfolio_summary + episodes + llm_report
+ *   5. GET /reports/{id}/transactions → flagged rows
+ *   6. Transform → UI shape expected by Analyze.jsx
  */
 
-// ── Config ──────────────────────────────────────────────────────────────────
+// ── Config ────────────────────────────────────────────────────────────────────
 export const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
-// ── Mock datasets ────────────────────────────────────────────────────────────
-
-const MOCK_SUMMARY = {
-  totalTransactions: 985,
-  totalDebit:        422090,
-  totalCredit:       420571,
-  topMerchant:       'NEFT',
-  avgTransaction:    855,
-  maxTransaction:    45000,
+// ── Auth helpers ──────────────────────────────────────────────────────────────
+function authHeaders() {
+  const token = localStorage.getItem('access_token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-const MOCK_DEBIT_CREDIT = [
-  { month: 'Jul 23', debit:   270, credit:      0 },
-  { month: 'Aug 23', debit: 23000, credit:   8000 },
-  { month: 'Sep 23', debit: 48000, credit:  12000 },
-  { month: 'Oct 23', debit: 42000, credit:  15000 },
-  { month: 'Nov 23', debit: 80000, credit: 150000 },
-  { month: 'Dec 23', debit: 46000, credit:  20000 },
-  { month: 'Jan 24', debit: 69000, credit:  35000 },
-  { month: 'Feb 24', debit:100000, credit:  22000 },
-  { month: 'Mar 24', debit:120000, credit:  45000 },
-  { month: 'Apr 24', debit: 80000, credit:  30000 },
-]
-
-const MOCK_SPENDING_TRENDS = MOCK_DEBIT_CREDIT.map(d => ({
-  month: d.month,
-  spend: d.debit + d.credit,
-}))
-
-const MOCK_MERCHANTS = [
-  { merchant: 'NEFT',              amount: 210000 },
-  { merchant: 'BY CASH',           amount: 145000 },
-  { merchant: 'UPI/23181',         amount: 130000 },
-  { merchant: 'UPI/4103',          amount: 130000 },
-  { merchant: 'GAS FILL. STATION', amount:  25000 },
-  { merchant: 'OTHERS',            amount:  25000 },
-]
-
-const MOCK_TX_TYPES = [
-  { name: 'UPI',    value: 46 },
-  { name: 'NEFT',   value: 22 },
-  { name: 'CARD',   value: 18 },
-  { name: 'CASH',   value: 10 },
-  { name: 'OTHERS', value:  4 },
-]
-
-const MOCK_RISK = {
-  riskScore:   62.8,
-  riskLevel:   'High',
-  flaggedCount: 868,
-  totalCount:   985,
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      ...authHeaders(),
+      ...options.headers,
+    },
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.detail ?? `HTTP ${res.status}`)
+  }
+  return res.json()
 }
 
-const MOCK_FLAGGED = [
-  { id:'tx001', date:'2023-06-27', merchant:'GAS FILLING STATION', debit_credit:'DEBIT', transaction_type:'CARD',   amount:100,   riskPoints:20, reason:'Repeated transaction amount (₹100 appears 39×)' },
-  { id:'tx002', date:'2023-06-28', merchant:'GAS FILLING STATION', debit_credit:'DEBIT', transaction_type:'CARD',   amount:170,   riskPoints:20, reason:'Repeated transaction amount (₹170 appears 5×)' },
-  { id:'tx003', date:'2023-07-26', merchant:'GAS FILLING STATION', debit_credit:'DEBIT', transaction_type:'CARD',   amount:500,   riskPoints:20, reason:'Repeated transaction amount (₹500 appears 58×)' },
-  { id:'tx004', date:'2023-07-31', merchant:'5188810',             debit_credit:'DEBIT', transaction_type:'OTHERS', amount:15,    riskPoints:20, reason:'Repeated transaction amount (₹15 appears 27×)' },
-  { id:'tx005', date:'2023-08-07', merchant:'ATM',                 debit_credit:'DEBIT', transaction_type:'ATM',    amount:1000,  riskPoints:20, reason:'Repeated transaction amount (₹1,000 appears 16×)' },
-  { id:'tx006', date:'2023-08-22', merchant:'UPI/3234',            debit_credit:'DEBIT', transaction_type:'UPI',    amount:1,     riskPoints:20, reason:'Repeated transaction amount (₹1 appears 27×)' },
-  { id:'tx007', date:'2023-08-22', merchant:'UPI/3234',            debit_credit:'DEBIT', transaction_type:'UPI',    amount:3000,  riskPoints:20, reason:'Repeated transaction amount (₹3,000 appears 7×)' },
-  { id:'tx008', date:'2023-08-22', merchant:'UPI/32345',           debit_credit:'DEBIT', transaction_type:'UPI',    amount:300,   riskPoints:20, reason:'Repeated transaction amount (₹300 appears 16×)' },
-  { id:'tx009', date:'2023-08-23', merchant:'UPI/3235',            debit_credit:'DEBIT', transaction_type:'UPI',    amount:1200,  riskPoints:20, reason:'Repeated transaction amount (₹1,200 appears 4×)' },
-  { id:'tx010', date:'2023-08-23', merchant:'UPI/ent',             debit_credit:'DEBIT', transaction_type:'UPI',    amount:400,   riskPoints:20, reason:'Repeated transaction amount (₹400 appears 23×)' },
-]
-
-const MOCK_AI_REPORT = {
-  executiveSummary:
-    'Between May 10 – May 24, the account showed multiple high-risk cash deposits followed by rapid fund transfers to different recipients. This pattern is consistent with layering behaviour. Overall risk level is HIGH. Recommended action: Further investigation and source of funds verification.',
-  insights: [
-    'Unusual ATM withdrawals detected at irregular hours — 12 AM to 4 AM activity window flagged on 23 occasions.',
-    'GAS FILLING STATION appears 58× at ₹500 exactly — structuring pattern suspected.',
-    'Rapid fund transfers to 4 distinct UPI IDs within a 24-hour window on 2023-08-22.',
-    'Balance shows high volatility: max ₹45,000 followed by near-zero within 3 days.',
-    'November 2023 shows a single ₹2,30,000 credit — origin and legitimacy should be verified.',
-  ],
-  recommendations: [
-    'Review and verify source of funds for the November 2023 bulk credit.',
-    'Monitor flagged transactions and cross-check UPI recipients against KYC records.',
-    'Investigate repeated micro-transactions to 5188810 for potential fee-based laundering.',
-    'Apply enhanced due diligence (EDD) given risk score above 60.',
-    'File Suspicious Transaction Report (STR) with FIU-IND if investigation confirms fraud.',
-  ],
+// ── Polling helper ────────────────────────────────────────────────────────────
+async function pollJob(jobId, onProgress, intervalMs = 1500, timeoutMs = 300_000) {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
+    const job = await apiFetch(`/jobs/${jobId}`)
+    onProgress?.(job)
+    if (job.status === 'done')    return job
+    if (job.status === 'failed')  throw new Error(job.error_msg ?? 'Analysis job failed')
+    await new Promise(r => setTimeout(r, intervalMs))
+  }
+  throw new Error('Analysis timed out after 5 minutes')
 }
 
-// ── Simulated network delay ───────────────────────────────────────────────
-const delay = (ms) => new Promise(r => setTimeout(r, ms))
-
-// ── API functions ─────────────────────────────────────────────────────────
-
+// ── Shape converters ──────────────────────────────────────────────────────────
 /**
- * Upload a bank statement file and retrieve full analysis.
- *
- * REAL IMPLEMENTATION (swap in when FastAPI is ready):
- *
- *   const form = new FormData()
- *   form.append('file', file)
- *   const res  = await fetch(`${BASE_URL}/api/analyze`, { method: 'POST', body: form })
- *   if (!res.ok) throw new Error(await res.text())
- *   return res.json()
- *
- * Expected response shape matches MOCK_ANALYSIS below.
+ * Turn the engine's portfolio_summary into SummaryCards-compatible shape.
  */
-export async function uploadAndAnalyze(file) {
-  // Simulate network + processing time
-  await delay(2200)
+function toSummary(ps, txns) {
+  const debits  = txns.filter(t => t.debit_credit?.toUpperCase().includes('DEBIT'))
+  const credits = txns.filter(t => t.debit_credit?.toUpperCase().includes('CREDIT'))
 
-  // In production: return real API response
+  const totalDebit  = debits.reduce((s, t) => s + (t.amount ?? 0), 0)
+  const totalCredit = credits.reduce((s, t) => s + (t.amount ?? 0), 0)
+
+  // top merchant by frequency in flagged set
+  const mFreq = {}
+  txns.forEach(t => { const m = t.narration ?? t.merchant ?? '?'; mFreq[m] = (mFreq[m] ?? 0) + 1 })
+  const topMerchant = Object.entries(mFreq).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A'
+
+  const amounts = txns.map(t => t.amount ?? 0).filter(Boolean)
+  const avg     = amounts.length ? amounts.reduce((s, v) => s + v, 0) / amounts.length : 0
+  const max     = amounts.length ? Math.max(...amounts) : 0
+
   return {
-    summary:          MOCK_SUMMARY,
-    debitCredit:      MOCK_DEBIT_CREDIT,
-    spendingTrends:   MOCK_SPENDING_TRENDS,
-    merchants:        MOCK_MERCHANTS,
-    transactionTypes: MOCK_TX_TYPES,
-    risk:             MOCK_RISK,
-    flagged:          MOCK_FLAGGED,
-    aiReport:         MOCK_AI_REPORT,
+    totalTransactions: ps.total_transactions ?? 0,
+    totalDebit:        Math.round(totalDebit),
+    totalCredit:       Math.round(totalCredit),
+    topMerchant,
+    avgTransaction:    Math.round(avg),
+    maxTransaction:    Math.round(max),
   }
 }
 
 /**
- * Fetch previously analysed statement by ID.
- * Wire to GET /api/analysis/:id
+ * Build monthly debit/credit series from flagged transactions.
+ * Falls back to a sparse series if dates are missing.
  */
-export async function fetchAnalysis(id) {
-  await delay(800)
+function toDebitCredit(txns) {
+  const monthly = {}
+  txns.forEach(t => {
+    const raw = t.txn_date ?? t.date ?? ''
+    const label = raw ? new Date(raw).toLocaleDateString('en-GB', { month: 'short', year: '2-digit' }) : 'Unknown'
+    if (!monthly[label]) monthly[label] = { debit: 0, credit: 0 }
+    const amt = t.amount ?? 0
+    const type = (t.debit_credit ?? '').toUpperCase()
+    if (type.includes('CREDIT')) monthly[label].credit += amt
+    else                          monthly[label].debit  += amt
+  })
+  return Object.entries(monthly).map(([month, v]) => ({ month, debit: Math.round(v.debit), credit: Math.round(v.credit) }))
+}
+
+/**
+ * Build merchant bar-chart data from flagged transactions.
+ */
+function toMerchants(txns) {
+  const byMerchant = {}
+  txns.forEach(t => {
+    const name = t.narration ?? t.merchant ?? 'UNKNOWN'
+    byMerchant[name] = (byMerchant[name] ?? 0) + (t.amount ?? 0)
+  })
+  return Object.entries(byMerchant)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([merchant, amount]) => ({ merchant, amount: Math.round(amount) }))
+}
+
+/**
+ * Build transaction-type pie data.
+ */
+function toTransactionTypes(txns) {
+  const counts = {}
+  txns.forEach(t => {
+    const type = t.dominant_signal ?? t.fraud_type ?? 'OTHER'
+    counts[type] = (counts[type] ?? 0) + 1
+  })
+  const total = txns.length || 1
+  return Object.entries(counts).map(([name, count]) => ({ name, value: Math.round(count / total * 100) }))
+}
+
+/**
+ * Convert the backend's flagged transaction list into the RiskCard shape.
+ */
+function toFlagged(txns) {
+  return txns.map((t, i) => ({
+    id:            t.id ?? `tx${String(i).padStart(3, '0')}`,
+    date:          t.txn_date ?? t.date ?? '',
+    merchant:      t.narration ?? t.merchant ?? '',
+    debit_credit:  t.debit_credit ?? 'DEBIT',
+    transaction_type: t.dominant_signal ?? t.fraud_type ?? '',
+    amount:        t.amount ?? 0,
+    riskPoints:    Math.round(t.final_risk_score ?? 0),
+    reason:        t.combined_reason ?? '',
+  }))
+}
+
+/**
+ * Convert portfolio summary risk fields into the RiskCard risk prop shape.
+ */
+function toRisk(ps) {
+  const score = ps.avg_final_risk_score ?? ps.max_final_risk_score ?? 0
+  let riskLevel = 'Low'
+  if (score >= 81) riskLevel = 'Critical'
+  else if (score >= 61) riskLevel = 'High'
+  else if (score >= 41) riskLevel = 'Medium'
+
   return {
-    summary:          MOCK_SUMMARY,
-    debitCredit:      MOCK_DEBIT_CREDIT,
-    spendingTrends:   MOCK_SPENDING_TRENDS,
-    merchants:        MOCK_MERCHANTS,
-    transactionTypes: MOCK_TX_TYPES,
-    risk:             MOCK_RISK,
-    flagged:          MOCK_FLAGGED,
-    aiReport:         MOCK_AI_REPORT,
+    riskScore:    parseFloat(score.toFixed(1)),
+    riskLevel,
+    flaggedCount: ps.flagged_count ?? 0,
+    totalCount:   ps.total_transactions ?? 0,
   }
 }
 
 /**
- * Download forensic PDF report.
- * Wire to GET /api/export-pdf/:id
+ * Convert llm_report text into the AIReport prop shape.
  */
-export async function exportPDF(analysisId) {
-  // Real: const res = await fetch(`${BASE_URL}/api/export-pdf/${analysisId}`)
-  //       const blob = await res.blob()
-  //       saveAs(blob, 'forensic-report.pdf')
-  await delay(500)
-  alert('PDF export — wire to FastAPI /api/export-pdf endpoint')
+function toAIReport(llmText, ps) {
+  // Try to parse sections from the LLM text (best-effort)
+  let executiveSummary = llmText ?? ''
+  const insights = []
+  const recommendations = []
+
+  // Fallback: derive insights from portfolio_summary
+  if (!llmText || llmText === 'None' || llmText.startsWith('{')) {
+    const rd = ps.risk_distribution ?? {}
+    executiveSummary = `Analysis complete. ${ps.total_transactions ?? 0} transactions reviewed. ` +
+      `${ps.flagged_count ?? 0} flagged (${(ps.flag_rate_pct ?? 0).toFixed(1)}% flag rate). ` +
+      `Average risk score: ${(ps.avg_final_risk_score ?? 0).toFixed(1)}/100. ` +
+      `Peak fraud hour: ${ps.peak_fraud_hour >= 0 ? ps.peak_fraud_hour + ':00' : 'N/A'}.`
+  }
+
+  // Add rule trigger counts as insights
+  const rules = ps.rule_trigger_counts ?? {}
+  Object.entries(rules)
+    .filter(([, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .forEach(([rule, count]) => insights.push(`${rule.replace(/_/g, ' ')}: triggered ${count} times`))
+
+  // Add fraud type breakdown as recommendations
+  const ftb = ps.fraud_type_breakdown ?? {}
+  Object.entries(ftb)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .forEach(([type, count]) => recommendations.push(`Review ${count} case(s) classified as: ${type}`))
+
+  if (recommendations.length === 0) {
+    recommendations.push('No specific fraud types detected. Continue monitoring.')
+  }
+
+  return { executiveSummary, insights, recommendations }
+}
+
+// ── Main export ───────────────────────────────────────────────────────────────
+
+/**
+ * Upload a CSV bank statement and run the unified fraud engine.
+ *
+ * @param {File} file
+ * @param {Function} [onProgress]  - called with job object on each poll
+ * @returns Full analysis in the shape expected by Analyze.jsx
+ */
+export async function uploadAndAnalyze(file, onProgress) {
+  // 1. Upload file
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const uploadRes = await fetch(`${BASE_URL}/upload`, {
+    method:      'POST',
+    headers:     authHeaders(),
+    credentials: 'include',
+    body:        formData,
+  })
+
+  if (uploadRes.status === 401) throw new Error('Please log in before uploading a statement.')
+  if (!uploadRes.ok) {
+    const body = await uploadRes.json().catch(() => ({}))
+    throw new Error(body.detail ?? `Upload failed (HTTP ${uploadRes.status})`)
+  }
+
+  const { job_id } = await uploadRes.json()
+
+  // 2. Poll until done
+  await pollJob(job_id, onProgress)
+
+  // 3. Get report list and find the one matching this job
+  const reports = await apiFetch('/reports/')
+  const report  = reports.find(r => r.job_id === job_id) ?? reports[0]
+  if (!report) throw new Error('Analysis complete but no report was found.')
+
+  // 4. Fetch full report detail
+  const reportDetail = await apiFetch(`/reports/${report.id}`)
+
+  // 5. Fetch flagged transactions (up to 500)
+  let txns = []
+  try {
+    const txnRes = await apiFetch(`/reports/${report.id}/transactions?limit=500`)
+    txns = txnRes.transactions ?? []
+  } catch (_) { /* empty */ }
+
+  // 6. Shape into UI format
+  const ps = reportDetail.portfolio_summary ?? {}
+
+  const debitCredit    = toDebitCredit(txns)
+  const spendingTrends = debitCredit.map(d => ({ month: d.month, spend: d.debit + d.credit }))
+
+  return {
+    summary:          toSummary(ps, txns),
+    debitCredit,
+    spendingTrends,
+    merchants:        toMerchants(txns),
+    transactionTypes: toTransactionTypes(txns),
+    risk:             toRisk(ps),
+    flagged:          toFlagged(txns),
+    aiReport:         toAIReport(reportDetail.llm_report, ps),
+    // Pass through raw engine data for future use
+    _episodes:        reportDetail.episodes ?? [],
+    _portfolioSummary: ps,
+  }
+}
+
+/**
+ * Fetch a previously analysed report by its report ID.
+ */
+export async function fetchAnalysis(reportId) {
+  const reportDetail = await apiFetch(`/reports/${reportId}`)
+  let txns = []
+  try {
+    const txnRes = await apiFetch(`/reports/${reportId}/transactions?limit=500`)
+    txns = txnRes.transactions ?? []
+  } catch (_) { /* empty */ }
+
+  const ps = reportDetail.portfolio_summary ?? {}
+  const debitCredit = toDebitCredit(txns)
+
+  return {
+    summary:          toSummary(ps, txns),
+    debitCredit,
+    spendingTrends:   debitCredit.map(d => ({ month: d.month, spend: d.debit + d.credit })),
+    merchants:        toMerchants(txns),
+    transactionTypes: toTransactionTypes(txns),
+    risk:             toRisk(ps),
+    flagged:          toFlagged(txns),
+    aiReport:         toAIReport(reportDetail.llm_report, ps),
+  }
+}
+
+/**
+ * Download scored CSV report.
+ */
+export async function exportPDF(reportId) {
+  const token = localStorage.getItem('access_token')
+  const res = await fetch(`${BASE_URL}/reports/${reportId}/download`, {
+    headers: authHeaders(),
+    credentials: 'include',
+  })
+  if (!res.ok) { alert('Export failed: ' + res.statusText); return }
+  const blob = await res.blob()
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `fraud_report_${reportId?.slice(0, 8) ?? 'export'}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
 }
