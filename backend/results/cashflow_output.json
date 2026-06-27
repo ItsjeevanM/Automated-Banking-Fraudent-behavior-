@@ -1,0 +1,98 @@
+{
+  "metrics": {
+    "calendar_days": 339,
+    "active_debit_days": 257,
+    "total_debits": 422089.9,
+    "total_credits": 420570.51,
+    "estimated_daily_spending": 858.7,
+    "median_daily_spending": 490.0,
+    "current_balance": 761.41,
+    "statement_start": "2023-06-27",
+    "statement_end": "2024-05-30"
+  },
+  "forecast": {
+    "runway_days": 0,
+    "depletion_date": "2024-05-30",
+    "risk_classification": "CRITICAL",
+    "projected_balances": [
+      {
+        "day": 0,
+        "date": "2024-05-30",
+        "projected_balance": 761.41
+      },
+      {
+        "day": 7,
+        "date": "2024-06-06",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 14,
+        "date": "2024-06-13",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 21,
+        "date": "2024-06-20",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 28,
+        "date": "2024-06-27",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 35,
+        "date": "2024-07-04",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 42,
+        "date": "2024-07-11",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 49,
+        "date": "2024-07-18",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 56,
+        "date": "2024-07-25",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 63,
+        "date": "2024-08-01",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 70,
+        "date": "2024-08-08",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 77,
+        "date": "2024-08-15",
+        "projected_balance": 0.0
+      },
+      {
+        "day": 84,
+        "date": "2024-08-22",
+        "projected_balance": 0.0
+      }
+    ]
+  },
+  "warnings": [
+    "Low balance: 761.41 is below the 5,000 threshold.",
+    "Short runway: estimated 0 days of cash remaining at 858.70/day spending rate.",
+    "13 high-spend day(s) detected (above 95th percentile: 5,697/day). Highest: 31,932.00 on 2023-11-29.",
+    "7 unusually large debit(s) detected (above 99th percentile: 12,042). Largest: 30,000.00 (UPI/44693/).",
+    "Recurring income detected. Forecast may underestimate account longevity."
+  ],
+  "metadata": {
+    "confidence_level": "Medium",
+    "confidence_reason": "Medium confidence (3/4): good history (339d), stable daily spend, good transaction volume (695), many outlier days (5%).",
+    "statement_start": "2023-06-27",
+    "statement_end": "2024-05-30"
+  }
+}

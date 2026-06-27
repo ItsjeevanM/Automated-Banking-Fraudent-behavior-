@@ -1,0 +1,1111 @@
+{
+  "summary": {
+    "total_transactions": 985,
+    "flagged_count": 29,
+    "flag_rate_pct": 2.9441624365482233,
+    "total_amount_at_risk": 403289.0,
+    "avg_final_risk_score": 12.328225527327316,
+    "max_final_risk_score": 86.6959414358057,
+    "risk_distribution": {
+      "Very Low": 911,
+      "Low": 14,
+      "Medium": 14,
+      "High": 11,
+      "Very High": 18,
+      "Critical": 17
+    },
+    "fraud_type_breakdown": {
+      "Account Takeover": 24,
+      "Normal": 5
+    },
+    "rule_trigger_counts": {
+      "HIGH_VALUE_TRANSACTION": 20,
+      "SPENDING_SPIKE": 100,
+      "REPEATED_TRANSACTION": 36,
+      "EXCESSIVE_WITHDRAWAL": 0,
+      "RAPID_TRANSACTION": 0,
+      "LATE_NIGHT_TRANSACTION": 3,
+      "BALANCE_DROP_ALERT": 189
+    },
+    "dominant_signal_counts": {
+      "ML": 0,
+      "RULES": 29,
+      "BOTH": 0
+    },
+    "peak_fraud_hour": 0,
+    "peak_fraud_day": "Wednesday",
+    "ml_only_caught": 1,
+    "rules_only_caught": 5,
+    "both_caught": 23
+  },
+  "flagged_transactions": [
+    {
+      "transaction_index": 285,
+      "date": "2023-11-15 00:00:00",
+      "time": "17:48:21",
+      "merchant": "UPI/36858",
+      "mode": "UPI",
+      "amount": 10000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 16,511.00 on 2023-11-15 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 10,000.00 is 77.1% of opening balance 12,970.80 on 2023-11-15 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 16,511.00 on 2023-11-15 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 77.1% of opening balance 12,970.80 on 2023-11-15 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 332,
+      "date": "2023-11-29 00:00:00",
+      "time": "16:15:33",
+      "merchant": "UPI/33333",
+      "mode": "UPI",
+      "amount": 19000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 19,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 19,000.00 is 496.8% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 19,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 19,000.00 is 496.8% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 353,
+      "date": "2023-12-05 00:00:00",
+      "time": "15:50:06",
+      "merchant": "UPI/BHARATPE",
+      "mode": "UPI",
+      "amount": 13000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 13,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 13,000.00 is 1952.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 13,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 13,000.00 is 1952.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 295,
+      "date": "2023-11-17 00:00:00",
+      "time": "16:34:54",
+      "merchant": "UPI/FASHIONEAZY",
+      "mode": "UPI",
+      "amount": 21000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 21,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 28,520.00 on 2023-11-17 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 21,000.00 is 69.5% of opening balance 30,200.80 on 2023-11-17 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 21,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 28,520.00 on 2023-11-17 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 21,000.00 is 69.5% of opening balance 30,200.80 on 2023-11-17 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 535,
+      "date": "2024-02-12 00:00:00",
+      "time": "13:22:57",
+      "merchant": "UPI/4409",
+      "mode": "UPI",
+      "amount": 10000.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 11,090.00 on 2024-02-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 10,000.00 is 75.5% of opening balance 13,244.81 on 2024-02-12 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 11,090.00 on 2024-02-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 75.5% of opening balance 13,244.81 on 2024-02-12 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 744,
+      "date": "2024-04-12 00:00:00",
+      "time": "20:50:06",
+      "merchant": "UPI/44693/",
+      "mode": "UPI",
+      "amount": 30000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 743,
+      "date": "2024-04-12 00:00:00",
+      "time": "20:47:44",
+      "merchant": "UPI/4103",
+      "mode": "UPI",
+      "amount": 30000.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 889,
+      "date": "2024-05-14 00:00:00",
+      "time": "11:51:56",
+      "merchant": "UPI/41350",
+      "mode": "UPI",
+      "amount": 10000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 11,300.00 on 2024-05-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 10,000.00 is 409.1% of opening balance 2,444.31 on 2024-05-14 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 11,300.00 on 2024-05-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 409.1% of opening balance 2,444.31 on 2024-05-14 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 648,
+      "date": "2024-03-20 00:00:00",
+      "time": "18:56:48",
+      "merchant": "UPI/44465",
+      "mode": "UPI",
+      "amount": 12000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 12,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 13,545.00 on 2024-03-20 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 12,000.00 is 91.5% of opening balance 13,119.11 on 2024-03-20 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 12,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 13,545.00 on 2024-03-20 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 12,000.00 is 91.5% of opening balance 13,119.11 on 2024-03-20 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 572,
+      "date": "2024-02-25 00:00:00",
+      "time": "11:08:34",
+      "merchant": "UPI/40563",
+      "mode": "UPI",
+      "amount": 20000.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 576,
+      "date": "2024-02-25 00:00:00",
+      "time": "20:08:58",
+      "merchant": "UPI/4422",
+      "mode": "UPI",
+      "amount": 20000.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 570,
+      "date": "2024-02-24 00:00:00",
+      "time": "18:55:15",
+      "merchant": "UPI/44219/-2ybl/Pa",
+      "mode": "UPI",
+      "amount": 20000.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 86.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 20,235.00 on 2024-02-24 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 20,000.00 is 574.1% of opening balance 3,483.91 on 2024-02-24 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 20,235.00 on 2024-02-24 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 20,000.00 is 574.1% of opening balance 3,483.91 on 2024-02-24 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 138,
+      "date": "2023-10-01 00:00:00",
+      "time": "19:51:09",
+      "merchant": "UPI/36408",
+      "mode": "UPI",
+      "amount": 4000.0,
+      "debit_credit": "Debit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 10,381.00 on 2023-10-01 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 4,000.00 is 242.7% of opening balance 1,647.80 on 2023-10-01 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 10,381.00 on 2023-10-01 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 4,000.00 is 242.7% of opening balance 1,647.80 on 2023-10-01 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 676,
+      "date": "2024-03-28 00:00:00",
+      "time": "17:50:04",
+      "merchant": "UPI/40883",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Debit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 10,570.00 on 2024-03-28 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 5,000.00 is 88.3% of opening balance 5,664.11 on 2024-03-28 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 10,570.00 on 2024-03-28 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 5,000.00 is 88.3% of opening balance 5,664.11 on 2024-03-28 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 677,
+      "date": "2024-03-28 00:00:00",
+      "time": "19:45:57",
+      "merchant": "UPI/4454",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Credit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 10,570.00 on 2024-03-28 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 5,000.00 is 88.3% of opening balance 5,664.11 on 2024-03-28 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 10,570.00 on 2024-03-28 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 5,000.00 is 88.3% of opening balance 5,664.11 on 2024-03-28 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 537,
+      "date": "2024-02-13 00:00:00",
+      "time": "14:01:51",
+      "merchant": "ATM",
+      "mode": "ATM",
+      "amount": 10000.0,
+      "debit_credit": "Debit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 10,370.00 on 2024-02-13 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 10,000.00 is 347.8% of opening balance 2,874.81 on 2024-02-13 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 10,370.00 on 2024-02-13 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 347.8% of opening balance 2,874.81 on 2024-02-13 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 291,
+      "date": "2023-11-16 00:00:00",
+      "time": "15:51:14",
+      "merchant": "BY CASH",
+      "mode": "CASH",
+      "amount": 45000.0,
+      "debit_credit": "Credit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 47,720.00 on 2023-11-16 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 45,000.00 is 341.4% of opening balance 13,180.80 on 2023-11-16 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 47,720.00 on 2023-11-16 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 45,000.00 is 341.4% of opening balance 13,180.80 on 2023-11-16 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 432,
+      "date": "2024-01-01 00:00:00",
+      "time": "18:37:59",
+      "merchant": "UPI/4367",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Credit",
+      "rule_score": 25,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 81.6959414358057,
+      "risk_category": "Very High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Daily spend 11,365.00 on 2024-01-01 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 5,000.00 is 75.6% of opening balance 6,609.51 on 2024-01-01 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Daily spend 11,365.00 on 2024-01-01 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 5,000.00 is 75.6% of opening balance 6,609.51 on 2024-01-01 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 419,
+      "date": "2023-12-27 00:00:00",
+      "time": "15:39:10",
+      "merchant": "UPI/33610",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Debit",
+      "rule_score": 15,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 76.6959414358057,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Transaction of 5,000.00 is 81.4% of opening balance 6,145.51 on 2023-12-27 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Transaction of 5,000.00 is 81.4% of opening balance 6,145.51 on 2023-12-27 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 625,
+      "date": "2024-03-14 00:00:00",
+      "time": "13:13:55",
+      "merchant": "UPI/40740",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Debit",
+      "rule_score": 15,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 76.6959414358057,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Transaction of 5,000.00 is 43.4% of opening balance 11,520.01 on 2024-03-14 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Transaction of 5,000.00 is 43.4% of opening balance 11,520.01 on 2024-03-14 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 506,
+      "date": "2024-01-31 00:00:00",
+      "time": "14:55:18",
+      "merchant": "UPI/43972",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Debit",
+      "rule_score": 15,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 76.6959414358057,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Transaction of 5,000.00 is 393.8% of opening balance 1,269.81 on 2024-01-31 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Transaction of 5,000.00 is 393.8% of opening balance 1,269.81 on 2024-01-31 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 867,
+      "date": "2024-05-10 00:00:00",
+      "time": "08:58:30",
+      "merchant": "UPI/44971",
+      "mode": "UPI",
+      "amount": 4000.0,
+      "debit_credit": "Credit",
+      "rule_score": 15,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 76.6959414358057,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Transaction of 4,000.00 is 98.8% of opening balance 4,050.21 on 2024-05-10 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Transaction of 4,000.00 is 98.8% of opening balance 4,050.21 on 2024-05-10 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 761,
+      "date": "2024-04-17 00:00:00",
+      "time": "19:16:12",
+      "merchant": "UPI/41080/",
+      "mode": "UPI",
+      "amount": 4000.0,
+      "debit_credit": "Debit",
+      "rule_score": 15,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 76.6959414358057,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Transaction of 4,000.00 is 2406.6% of opening balance 166.21 on 2024-04-17 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Transaction of 4,000.00 is 2406.6% of opening balance 166.21 on 2024-04-17 (threshold: 40%). ML score below threshold (62/100)"
+    },
+    {
+      "transaction_index": 277,
+      "date": "2023-11-14 00:00:00",
+      "time": "18:49:41",
+      "merchant": "UPI/PAYTMUP",
+      "mode": "UPI",
+      "amount": 16500.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 38.304058564194314,
+      "final_risk_score": 63.304058564194314,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Normal",
+      "fraud_probability": 0.38304058564194315,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 16,500.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 57,161.00 on 2023-11-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 16,500.00 is 66.1% of opening balance 24,971.80 on 2023-11-14 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 16,500.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 57,161.00 on 2023-11-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 16,500.00 is 66.1% of opening balance 24,971.80 on 2023-11-14 (threshold: 40%). ML score below threshold (38/100)"
+    },
+    {
+      "transaction_index": 275,
+      "date": "2023-11-14 00:00:00",
+      "time": "18:31:11",
+      "merchant": "UPI/33181",
+      "mode": "UPI",
+      "amount": 37999.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 38.304058564194314,
+      "final_risk_score": 63.304058564194314,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Normal",
+      "fraud_probability": 0.38304058564194315,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 37,999.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 57,161.00 on 2023-11-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 37,999.00 is 152.2% of opening balance 24,971.80 on 2023-11-14 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 37,999.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 57,161.00 on 2023-11-14 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 37,999.00 is 152.2% of opening balance 24,971.80 on 2023-11-14 (threshold: 40%). ML score below threshold (38/100)"
+    },
+    {
+      "transaction_index": 333,
+      "date": "2023-11-29 00:00:00",
+      "time": "17:09:47",
+      "merchant": "UPI/36992",
+      "mode": "UPI",
+      "amount": 12700.0,
+      "debit_credit": "Debit",
+      "rule_score": 40,
+      "ml_score": 38.304058564194314,
+      "final_risk_score": 63.304058564194314,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Normal",
+      "fraud_probability": 0.38304058564194315,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 12,700.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)",
+        "Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 12,700.00 is 332.0% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 12,700.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 12,700.00 is 332.0% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%). ML score below threshold (38/100)"
+    },
+    {
+      "transaction_index": 351,
+      "date": "2023-12-05 00:00:00",
+      "time": "07:08:30",
+      "merchant": "NEFT",
+      "mode": "OTHERS",
+      "amount": 7560.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 38.304058564194314,
+      "final_risk_score": 63.304058564194314,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Normal",
+      "fraud_probability": 0.38304058564194315,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 7,560.00 exceeds 5.0x NEFT channel median (800.00) and absolute floor (5,000)",
+        "Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 7,560.00 is 1135.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 7,560.00 exceeds 5.0x NEFT channel median (800.00) and absolute floor (5,000); Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 7,560.00 is 1135.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%). ML score below threshold (38/100)"
+    },
+    {
+      "transaction_index": 884,
+      "date": "2024-05-13 00:00:00",
+      "time": "06:54:41",
+      "merchant": "NEFT",
+      "mode": "OTHERS",
+      "amount": 11530.0,
+      "debit_credit": "Credit",
+      "rule_score": 40,
+      "ml_score": 38.304058564194314,
+      "final_risk_score": 63.304058564194314,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Normal",
+      "fraud_probability": 0.38304058564194315,
+      "flags": [
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE",
+        "BALANCE_DROP_ALERT"
+      ],
+      "reasons": [
+        "Amount 11,530.00 exceeds 5.0x NEFT channel median (800.00) and absolute floor (5,000)",
+        "Daily spend 11,660.00 on 2024-05-13 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000)",
+        "Transaction of 11,530.00 is 530.3% of opening balance 2,174.31 on 2024-05-13 (threshold: 40%)"
+      ],
+      "combined_reason": "Rule-based flags: Amount 11,530.00 exceeds 5.0x NEFT channel median (800.00) and absolute floor (5,000); Daily spend 11,660.00 on 2024-05-13 exceeded 4.0\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 11,530.00 is 530.3% of opening balance 2,174.31 on 2024-05-13 (threshold: 40%). ML score below threshold (38/100)"
+    },
+    {
+      "transaction_index": 322,
+      "date": "2023-11-26 00:00:00",
+      "time": "12:23:45",
+      "merchant": "UPI/36963",
+      "mode": "UPI",
+      "amount": 5000.0,
+      "debit_credit": "Debit",
+      "rule_score": 0,
+      "ml_score": 61.69594143580569,
+      "final_risk_score": 61.69594143580569,
+      "risk_category": "High",
+      "dominant_signal": "RULES",
+      "fraud_type_predicted": "Account Takeover",
+      "fraud_probability": 0.6169594143580569,
+      "flags": [],
+      "reasons": [],
+      "combined_reason": "Rule-based flags: no rule flags. ML score below threshold (62/100)"
+    }
+  ],
+  "episodes": [
+    {
+      "episode_id": 1,
+      "txn_count": 1,
+      "total_amount": 4000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 81.6959414358057,
+      "max_final_score": 81.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 25.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 2,
+      "txn_count": 4,
+      "total_amount": 109499.0,
+      "duration_minutes": 2720.05,
+      "avg_final_score": 73.75,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Normal",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 50.0,
+      "rule_avg_score": 36.25,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 3,
+      "txn_count": 1,
+      "total_amount": 21000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 4,
+      "txn_count": 1,
+      "total_amount": 5000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 61.69594143580569,
+      "max_final_score": 61.69594143580569,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 0.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 5,
+      "txn_count": 2,
+      "total_amount": 31700.0,
+      "duration_minutes": 54.233333333333334,
+      "avg_final_score": 75.0,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 50.0,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 6,
+      "txn_count": 2,
+      "total_amount": 20560.0,
+      "duration_minutes": 521.6,
+      "avg_final_score": 75.0,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Normal",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 50.0,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 7,
+      "txn_count": 1,
+      "total_amount": 5000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 76.6959414358057,
+      "max_final_score": 76.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 15.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 8,
+      "txn_count": 1,
+      "total_amount": 5000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 81.6959414358057,
+      "max_final_score": 81.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 25.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 9,
+      "txn_count": 1,
+      "total_amount": 5000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 76.6959414358057,
+      "max_final_score": 76.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 15.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 10,
+      "txn_count": 1,
+      "total_amount": 10000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 11,
+      "txn_count": 1,
+      "total_amount": 10000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 81.6959414358057,
+      "max_final_score": 81.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 25.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 12,
+      "txn_count": 3,
+      "total_amount": 60000.0,
+      "duration_minutes": 1513.7166666666667,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.695941435805686,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 13,
+      "txn_count": 1,
+      "total_amount": 5000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 76.6959414358057,
+      "max_final_score": 76.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 15.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 14,
+      "txn_count": 1,
+      "total_amount": 12000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 15,
+      "txn_count": 2,
+      "total_amount": 10000.0,
+      "duration_minutes": 115.88333333333334,
+      "avg_final_score": 81.6959414358057,
+      "max_final_score": 81.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 25.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 16,
+      "txn_count": 2,
+      "total_amount": 60000.0,
+      "duration_minutes": 2.3666666666666667,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 17,
+      "txn_count": 1,
+      "total_amount": 4000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 76.6959414358057,
+      "max_final_score": 76.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 15.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 18,
+      "txn_count": 1,
+      "total_amount": 4000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 76.6959414358057,
+      "max_final_score": 76.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 15.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 19,
+      "txn_count": 1,
+      "total_amount": 11530.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 63.304058564194314,
+      "max_final_score": 63.304058564194314,
+      "dominant_fraud_type": "Normal",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 38.304058564194314,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    },
+    {
+      "episode_id": 20,
+      "txn_count": 1,
+      "total_amount": 10000.0,
+      "duration_minutes": 0.0,
+      "avg_final_score": 86.6959414358057,
+      "max_final_score": 86.6959414358057,
+      "dominant_fraud_type": "Account Takeover",
+      "rules_fired_in_episode": [
+        "BALANCE_DROP_ALERT",
+        "HIGH_VALUE_TRANSACTION",
+        "SPENDING_SPIKE"
+      ],
+      "ml_avg_score": 61.69594143580569,
+      "rule_avg_score": 40.0,
+      "attack_pattern": "Unknown Pattern"
+    }
+  ],
+  "llm_prompt": "\nYou are an expert financial forensic analyst and fraud investigator.\nBelow is the output data from our Bank Fraud Detection System, consisting of three levels of context:\n1. Portfolio Summary (macro level)\n2. Episode Clusters (mid level, grouped timeline of attacks)\n3. Top 10 Flagged Transactions (micro level evidence packets)\n\nPlease write a comprehensive, publication-quality narrative report based on this data.\n\n### REPORT STRUCTURE TO FOLLOW:\n1. EXECUTIVE SUMMARY: A high-level overview of the portfolio, flagging rate, risk distribution, and overall risk posture. Synthesize, do not just repeat the numbers. Explain the overall severity and risk.\n2. PER-EPISODE ATTACK NARRATIVE: A narrative detail of the top attack episodes detected. Explain the attack patterns (e.g., Smurfing, Account Takeover, Account Draining) with causal reasoning of what the fraudster was attempting.\n3. PER-TRANSACTION EXPLANATIONS: Deep-dive explanation for the top 10 flagged transactions. Discuss why they were flagged, the fusion of ML and Rule signals, and the dominant signal. Acknowledge uncertainty on medium scores.\n\n---\n### LEVEL 1: PORTFOLIO SUMMARY\n{\n  \"total_transactions\": 985,\n  \"flagged_count\": 29,\n  \"flag_rate_pct\": 2.9441624365482233,\n  \"total_amount_at_risk\": 403289.0,\n  \"avg_final_risk_score\": 12.328225527327316,\n  \"max_final_risk_score\": 86.6959414358057,\n  \"risk_distribution\": {\n    \"Very Low\": 911,\n    \"Low\": 14,\n    \"Medium\": 14,\n    \"High\": 11,\n    \"Very High\": 18,\n    \"Critical\": 17\n  },\n  \"fraud_type_breakdown\": {\n    \"Account Takeover\": 24,\n    \"Normal\": 5\n  },\n  \"rule_trigger_counts\": {\n    \"HIGH_VALUE_TRANSACTION\": 20,\n    \"SPENDING_SPIKE\": 100,\n    \"REPEATED_TRANSACTION\": 36,\n    \"EXCESSIVE_WITHDRAWAL\": 0,\n    \"RAPID_TRANSACTION\": 0,\n    \"LATE_NIGHT_TRANSACTION\": 3,\n    \"BALANCE_DROP_ALERT\": 189\n  },\n  \"dominant_signal_counts\": {\n    \"ML\": 0,\n    \"RULES\": 29,\n    \"BOTH\": 0\n  },\n  \"peak_fraud_hour\": 0,\n  \"peak_fraud_day\": \"Wednesday\",\n  \"ml_only_caught\": 1,\n  \"rules_only_caught\": 5,\n  \"both_caught\": 23\n}\n\n---\n### LEVEL 2: TOP 3 EPISODES OF ATTACK\n[\n  {\n    \"episode_id\": 2,\n    \"txn_count\": 4,\n    \"total_amount\": 109499.0,\n    \"duration_minutes\": 2720.05,\n    \"avg_final_score\": 73.75,\n    \"max_final_score\": 86.6959414358057,\n    \"dominant_fraud_type\": \"Normal\",\n    \"rules_fired_in_episode\": [\n      \"BALANCE_DROP_ALERT\",\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\"\n    ],\n    \"ml_avg_score\": 50.0,\n    \"rule_avg_score\": 36.25,\n    \"attack_pattern\": \"Unknown Pattern\"\n  },\n  {\n    \"episode_id\": 3,\n    \"txn_count\": 1,\n    \"total_amount\": 21000.0,\n    \"duration_minutes\": 0.0,\n    \"avg_final_score\": 86.6959414358057,\n    \"max_final_score\": 86.6959414358057,\n    \"dominant_fraud_type\": \"Account Takeover\",\n    \"rules_fired_in_episode\": [\n      \"BALANCE_DROP_ALERT\",\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\"\n    ],\n    \"ml_avg_score\": 61.69594143580569,\n    \"rule_avg_score\": 40.0,\n    \"attack_pattern\": \"Unknown Pattern\"\n  },\n  {\n    \"episode_id\": 5,\n    \"txn_count\": 2,\n    \"total_amount\": 31700.0,\n    \"duration_minutes\": 54.233333333333334,\n    \"avg_final_score\": 75.0,\n    \"max_final_score\": 86.6959414358057,\n    \"dominant_fraud_type\": \"Account Takeover\",\n    \"rules_fired_in_episode\": [\n      \"BALANCE_DROP_ALERT\",\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\"\n    ],\n    \"ml_avg_score\": 50.0,\n    \"rule_avg_score\": 40.0,\n    \"attack_pattern\": \"Unknown Pattern\"\n  }\n]\n\n---\n### LEVEL 3: TOP 10 FLAGGED TRANSACTIONS WITH EVIDENCE\n[\n  {\n    \"transaction_index\": 285,\n    \"date\": \"2023-11-15 00:00:00\",\n    \"time\": \"17:48:21\",\n    \"amount\": 10000.0,\n    \"merchant\": \"UPI/36858\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 16,511.00 on 2023-11-15 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 77.1% of opening balance 12,970.80 on 2023-11-15 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 16,511.00 on 2023-11-15 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 10,000.00 is 77.1% of opening balance 12,970.80 on 2023-11-15 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 332,\n    \"date\": \"2023-11-29 00:00:00\",\n    \"time\": \"16:15:33\",\n    \"amount\": 19000.0,\n    \"merchant\": \"UPI/33333\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 19,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 19,000.00 is 496.8% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 19,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 34,083.00 on 2023-11-29 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 19,000.00 is 496.8% of opening balance 3,824.80 on 2023-11-29 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 353,\n    \"date\": \"2023-12-05 00:00:00\",\n    \"time\": \"15:50:06\",\n    \"amount\": 13000.0,\n    \"merchant\": \"UPI/BHARATPE\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 13,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 13,000.00 is 1952.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 13,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 20,820.00 on 2023-12-05 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 13,000.00 is 1952.5% of opening balance 665.80 on 2023-12-05 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 295,\n    \"date\": \"2023-11-17 00:00:00\",\n    \"time\": \"16:34:54\",\n    \"amount\": 21000.0,\n    \"merchant\": \"UPI/FASHIONEAZY\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 21,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 28,520.00 on 2023-11-17 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 21,000.00 is 69.5% of opening balance 30,200.80 on 2023-11-17 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 21,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 28,520.00 on 2023-11-17 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 21,000.00 is 69.5% of opening balance 30,200.80 on 2023-11-17 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 535,\n    \"date\": \"2024-02-12 00:00:00\",\n    \"time\": \"13:22:57\",\n    \"amount\": 10000.0,\n    \"merchant\": \"UPI/4409\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 11,090.00 on 2024-02-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 75.5% of opening balance 13,244.81 on 2024-02-12 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 11,090.00 on 2024-02-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 10,000.00 is 75.5% of opening balance 13,244.81 on 2024-02-12 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 744,\n    \"date\": \"2024-04-12 00:00:00\",\n    \"time\": \"20:50:06\",\n    \"amount\": 30000.0,\n    \"merchant\": \"UPI/44693/\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 743,\n    \"date\": \"2024-04-12 00:00:00\",\n    \"time\": \"20:47:44\",\n    \"amount\": 30000.0,\n    \"merchant\": \"UPI/4103\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 30,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 63,539.00 on 2024-04-12 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 30,000.00 is 1131.6% of opening balance 2,651.21 on 2024-04-12 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 889,\n    \"date\": \"2024-05-14 00:00:00\",\n    \"time\": \"11:51:56\",\n    \"amount\": 10000.0,\n    \"merchant\": \"UPI/41350\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 11,300.00 on 2024-05-14 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 10,000.00 is 409.1% of opening balance 2,444.31 on 2024-05-14 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 10,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 11,300.00 on 2024-05-14 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 10,000.00 is 409.1% of opening balance 2,444.31 on 2024-05-14 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 648,\n    \"date\": \"2024-03-20 00:00:00\",\n    \"time\": \"18:56:48\",\n    \"amount\": 12000.0,\n    \"merchant\": \"UPI/44465\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 12,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 13,545.00 on 2024-03-20 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 12,000.00 is 91.5% of opening balance 13,119.11 on 2024-03-20 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 12,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 13,545.00 on 2024-03-20 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 12,000.00 is 91.5% of opening balance 13,119.11 on 2024-03-20 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  },\n  {\n    \"transaction_index\": 572,\n    \"date\": \"2024-02-25 00:00:00\",\n    \"time\": \"11:08:34\",\n    \"amount\": 20000.0,\n    \"merchant\": \"UPI/40563\",\n    \"mode\": \"UPI\",\n    \"ml_score\": 61.69594143580569,\n    \"rule_score\": 40.0,\n    \"final_risk_score\": 86.6959414358057,\n    \"risk_category\": \"Very High\",\n    \"dominant_signal\": \"RULES\",\n    \"combined_reason\": \"Rule-based flags: Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000); Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000); Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%). ML score below threshold (62/100)\",\n    \"rule_flags\": [\n      \"HIGH_VALUE_TRANSACTION\",\n      \"SPENDING_SPIKE\",\n      \"BALANCE_DROP_ALERT\"\n    ],\n    \"rule_reasons\": [\n      \"Amount 20,000.00 exceeds 5.0x UPI channel median (130.00) and absolute floor (5,000)\",\n      \"Daily spend 40,219.00 on 2024-02-25 exceeded 4.0\\u00d7 median daily spend (1,142.95) and floor (10,000)\",\n      \"Transaction of 20,000.00 is 542.9% of opening balance 3,683.91 on 2024-02-25 (threshold: 40%)\"\n    ],\n    \"fraud_type_predicted\": \"Account Takeover\",\n    \"fraud_probability\": 0.6169594143580569\n  }\n]\n\n---\n### INSTRUCTIONS FOR YOUR ANALYSIS:\n- SYNTHESIZE, DO NOT DESCRIBE: Connect the dots between episodes and transaction behaviors rather than just reciting lists of numbers.\n- CAUSAL REASONING: Explain *how* and *why* these behaviors signal specific fraud types (e.g., why round amounts combined with late-night times point to money laundering or account takeover).\n- PRIORITIZE BY RISK: Focus heaviest attention on Critical and High risk categories.\n- ACKNOWLEDGE UNCERTAINTY: For medium/moderate scores, clearly state what additional context would be needed to make a definitive judgment.\n"
+}
