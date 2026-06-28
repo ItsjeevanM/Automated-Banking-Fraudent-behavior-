@@ -80,6 +80,29 @@ def step_validate_file(csv_path: Path) -> None:
         csv_path.stat().st_size / 1024,
     )
 
+def step_route_input(input_path: Path) -> Path:
+    """
+    Gate 1.5 — route the uploaded file (csv/pdf/jpg/jpeg/png) to a CSV path
+    via services/input_router.py. All file-type detection/conversion logic
+    lives in that module — this gate only calls it and validates the result.
+
+    Raises
+    ------
+    ImportError  if input_router.py is not on sys.path.
+    ValueError   if the router doesn't return a usable CSV path.
+    """
+    from services import input_router  # lazy import
+
+    logger.info("Routing input: %s", input_path)
+    csv_path = input_router.route(input_path)
+
+    if not csv_path or not Path(csv_path).exists():
+        raise ValueError(
+            f"input_router did not return a valid CSV for: {input_path}"
+        )
+    logger.info("Routed → %s", csv_path)
+    return Path(csv_path)
+
 
 def step_standardize(csv_path: Path) -> list[dict]:
     """
@@ -339,27 +362,24 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 # MAIN
 # ===========================================================================
 
-def main(argv: list[str] | None = None) -> int:
-    """
-    Orchestrate the full pipeline. Returns 0 on success, 1 on handled error.
+def run_pipeline(input_path: Path, output_path: Path) -> dict[str, Any]:
+    step_validate_file(input_path)
+    csv_path = step_route_input(input_path)
+    records  = step_standardize(csv_path)
+    df       = step_to_dataframe(records)
+    report   = step_analytics(df)
+    report   = step_optional_services(df, report)
+    step_save_report(report, output_path)
+    step_print_summary(report, df)
+    return report
 
-    All business logic is delegated to service modules.
-    This function only sequences steps and handles top-level exceptions.
-    """
+def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     logging.getLogger().setLevel(args.log_level.upper())
-
     logger.info("=== Bank Statement Analysis Platform — START ===")
 
     try:
-        step_validate_file(args.csv_path)
-        records = step_standardize(args.csv_path)
-        df      = step_to_dataframe(records)
-        report  = step_analytics(df)
-        report  = step_optional_services(df, report)
-        step_save_report(report, args.output)
-        step_print_summary(report, df)
-
+        run_pipeline(args.csv_path, args.output)
     except FileNotFoundError as exc:
         logger.error("File error: %s", exc)
         return 1
@@ -370,18 +390,14 @@ def main(argv: list[str] | None = None) -> int:
         logger.error("Type contract violated: %s", exc)
         return 1
     except ImportError as exc:
-        logger.error(
-            "Missing service module — ensure services/ is in the same "
-            "directory as app.py and contains __init__.py.\n  Detail: %s", exc
-        )
+        logger.error("Missing service module: %s", exc)
         return 1
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc: 
         logger.exception("Unexpected error: %s", exc)
         return 1
 
     logger.info("=== Bank Statement Analysis Platform — DONE ===")
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

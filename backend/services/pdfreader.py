@@ -25,6 +25,9 @@ import sys
 from collections import defaultdict
 import pdfplumber
 
+import uuid
+from pathlib import Path
+
 # ── column x-boundaries (points) ──────────────────────────────────────────────
 DATE_X_MAX  = 100   # Date column:        x0 < 100
 DESC_X_MIN  = 115   # Description column: 115 < x0 < 480
@@ -71,6 +74,36 @@ def guess_transaction_type(description):
     if "CGST" in d or "SGST" in d:                      return "TAX"
     if "DISCOUNT" in d:                                  return "DISCOUNT"
     return "OTHER"
+
+def save_csv(transactions, csv_path):
+    fieldnames = ["id", "debit_credit", "amount", "balance", "date", "time",
+                  "transaction_type", "merchant"]
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(transactions)
+
+
+def convert(pdf_path: str | Path, output_dir: str | Path = "uploads") -> str:
+    """
+    Convert a bank-statement PDF to CSV and save it under output_dir.
+    Called by services/input_router.py for .pdf uploads.
+
+    Returns
+    -------
+    str — absolute path to the generated CSV.
+    """
+    pdf_path   = Path(pdf_path)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    transactions = extract_transactions(str(pdf_path))
+
+    csv_name = f"{pdf_path.stem}_{uuid.uuid4().hex[:8]}.csv"
+    csv_path = output_dir / csv_name
+    save_csv(transactions, csv_path)
+
+    return str(csv_path.resolve())
 
 def extract_merchant(description, txn_type):
     desc = description.strip()
