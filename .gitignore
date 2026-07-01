@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Backend
+analytics_report.json
+risk_report.json
+debug_report_generator_output.json
+__pycache__
+uploads
+results
+
+# Database
+*.db
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Node
+node_modules/
+
+# Build files
+dist/
+build/
+
+# Environment variables
+.env
+
+# VS Code settings (optional)
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
