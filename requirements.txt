@@ -1,0 +1,57 @@
+# ============================================================
+# Backend Requirements — Automated Banking Fraud Detection
+# ============================================================
+# Install with:  pip install -r requirements.txt
+# Python version: 3.10+
+# ============================================================
+
+# --- Web Framework ---
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+starlette>=0.37.0
+python-multipart>=0.0.9         # for file uploads (UploadFile)
+
+# --- Authentication & Security ---
+python-jose[cryptography]>=3.3.0  # JWT tokens
+passlib[bcrypt]>=1.7.4            # password hashing
+
+# --- Environment Variables ---
+python-dotenv>=1.0.1
+
+# --- Data Science & ML Core ---
+numpy>=1.26.0
+pandas>=2.2.0
+scikit-learn>=1.4.0
+joblib>=1.4.0
+
+# --- ML (Optional but recommended) ---
+xgboost>=2.0.0                  # XGBoost classifier (optional, falls back if missing)
+imbalanced-learn>=0.12.0        # SMOTE oversampling (optional, falls back if missing)
+shap>=0.45.0                    # SHAP explainability (optional, falls back if missing)
+
+# --- PDF Generation ---
+reportlab>=4.2.0                # PDF report builder (platypus / paragraphs)
+matplotlib>=3.9.0               # Charts embedded in PDF reports
+
+# --- PDF Reading / OCR ---
+pdfplumber>=0.11.0              # Extract tables from bank statement PDFs
+Pillow>=10.3.0                  # Image handling for OCR
+pytesseract>=0.3.13             # Tesseract OCR wrapper (requires Tesseract installed separately)
+
+# --- Google Gemini AI ---
+google-genai>=1.0.0             # Google Generative AI client (Gemini)
+
+# --- Database ---
+# sqlite3 is built into Python — no extra install needed
+
+# ============================================================
+# SYSTEM DEPENDENCIES (not pip-installable):
+# ============================================================
+# Tesseract OCR Engine (for OCR image processing):
+#   Windows : https://github.com/UB-Mannheim/tesseract/wiki
+#   Linux   : sudo apt install tesseract-ocr
+#   macOS   : brew install tesseract
+#
+# After installing, set the path in ocr_extractor_local.py:
+#   pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# ============================================================
